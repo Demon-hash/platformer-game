@@ -1,10 +1,12 @@
-import {Camera, Player, PlayersList, Screen, World} from "./classes";
+import {Camera, Player, PlayersList, Screen, World, Level} from "./classes";
 
 const world = new World();
 const camera = new Camera();
-
+const list = new PlayersList();
 const player = new Player();
-player.attach(world);
+const screen = new Screen();
+const level = new Level(camera, world, list);
 
-const players = new PlayersList([player]);
-new Screen({camera, world, players});
+player.attach(world);
+list.add(player);
+screen.setScene(level);

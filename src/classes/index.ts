@@ -6,3 +6,5 @@ export * from './screen';
 export * from './sprite';
 export * from './tile';
 export * from './world';
+export * from './level';
+export * from './scene';

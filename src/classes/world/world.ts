@@ -26,17 +26,13 @@ export class World {
 
         let level = (40 + Math.round(Math.random() * 10));
 
-        // Math.floor(Math.random() * 2))
-
         for (let i = 0; i < 64; i++) {
-            this.tiles[(WORLD_WIDTH * (level + 0) + i)] = 1;
+            this.tiles[(WORLD_WIDTH * (level + Math.floor(Math.random() * 2)) + i)] = 1;
         }
+    }
 
-        window.addEventListener('click', (event: MouseEvent) => {
-            const x = Math.floor(event.x / TILE_SIZE);
-            const y = Math.floor(event.y/ TILE_SIZE);
-            this.tiles[Math.floor((y * this._width) + x)] = 1;
-        });
+    setTileId(x: number, y: number, id: number) {
+        this.tiles[Math.floor((Math.floor(y / TILE_SIZE) * this._width) + Math.floor(x / TILE_SIZE))] = id;
     }
 
     getTitleId(x: number, y: number): number {

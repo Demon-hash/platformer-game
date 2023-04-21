@@ -5,19 +5,18 @@ export const CAMERA_WIDTH = 1024;
 export const CAMERA_HEIGHT = 768;
 
 export class Camera {
+    public readonly w = CAMERA_WIDTH;
+    public readonly h = CAMERA_HEIGHT;
+
     private bw: number;
     private bh: number;
 
-    public readonly w: number;
-    public readonly h: number;
-
     public x = 0;
     public y = 0;
+
     public id = 0;
 
     constructor() {
-        this.w = CAMERA_WIDTH;
-        this.h = CAMERA_HEIGHT;
         this.bw = this.x + Math.floor(this.w / 2);
         this.bh = this.y + Math.floor(this.h / 2);
     }

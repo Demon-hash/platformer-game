@@ -1,80 +1,31 @@
-import {Entity, EntityRenderCycle} from "../entity";
+import {Entity} from "../entity";
 import {Camera} from "../camera";
-import {crop, Sprite} from "../sprite";
-import {Tile, TILE_SIZE} from "../tile";
-import {World} from "../world";
+import {TILE_SIZE} from "../tile";
+import {crop} from "../sprite";
+import {Borders, Vec2} from "../math";
 
-export class Player extends Entity implements EntityRenderCycle {
-    private readonly tile = new Tile();
-
+export class Player extends Entity {
     public id: number;
 
     constructor() {
-        super(240, 0);
-        this.borders = {width: 73, height: 86};
+        super({
+            coords: new Vec2(240, 0),
+            borders: new Borders(73, 86),
+            sprite: {
+                src: 'https://s6.uupload.ir/files/images_byd7.png',
+                crop: crop(73, 0, 73, 86)
+            },
+            misc: {
+                gravity: 0.5,
+                speed: 2
+            }
+        });
 
-        this.controls();
-
-        this.sprite = new Sprite({
-            src: 'https://s6.uupload.ir/files/images_byd7.png',
-            x: this.coords.x,
-            y: this.coords.y,
-            crop: crop(this.borders.width, 0, this.borders.width, this.borders.height)
-        })
+        this.useKeyboard();
 
         setInterval(() => {
             this.frame = (this.frame + 1) % 8
         }, 120);
-    }
-
-    attach(world: World) {
-        this.world = world;
-    }
-
-    async collision() {
-        if (!this.world) {
-            return;
-        }
-
-        const rectangle = {
-            horizontal: {
-                x: Math.floor((this.coords.x + this.velocity.x) / TILE_SIZE),
-                w: Math.floor(((this.coords.x + this.borders.width) + this.velocity.x) / TILE_SIZE),
-                y: Math.floor(this.coords.y / TILE_SIZE),
-                iterations: Math.ceil((this.borders.height + this.velocity.y) / TILE_SIZE),
-            },
-            vertical: {
-                x: Math.floor(this.coords.x / TILE_SIZE),
-                y: Math.floor((this.coords.y + this.borders.height) / TILE_SIZE),
-                h: Math.floor((this.coords.y + this.velocity.y) / TILE_SIZE),
-                iterations: Math.ceil((this.borders.width + this.velocity.x) / TILE_SIZE),
-            }
-        }
-
-        for (let i = 0; i < rectangle.horizontal.iterations; i++) {
-            rectangle.horizontal.y = Math.floor((this.coords.y + (i * TILE_SIZE)) / TILE_SIZE);
-            if (this.tile.get(this.world.getTitleId(rectangle.horizontal.x, rectangle.horizontal.y), 'solid') || this.tile.get(this.world.getTitleId(rectangle.horizontal.w, rectangle.horizontal.y), 'solid')) {
-                this.velocity.x = 0;
-            }
-        }
-
-        for (let i = 0; i < rectangle.vertical.iterations; i++) {
-            rectangle.vertical.x = Math.floor((this.coords.x + (i * TILE_SIZE)) / TILE_SIZE);
-            if (this.tile.get(this.world.getTitleId(rectangle.vertical.x, rectangle.vertical.y), 'solid') || this.tile.get(this.world.getTitleId(rectangle.vertical.x, rectangle.vertical.h), 'solid')) {
-                switch (Math.sign(this.velocity.y)) {
-                    case -1:
-                        this.velocity.y = this.gravity;
-                        break;
-                    case 1:
-                        this.coords.y = (rectangle.vertical.y * TILE_SIZE) - (this.borders.height);
-                        this.velocity.y = 0;
-                        break;
-                }
-                return;
-            }
-        }
-
-        this.velocity.y += this.gravity;
     }
 
     update() {
