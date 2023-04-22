@@ -1,17 +1,19 @@
 import {Tile, TILE_SIZE} from "../tile";
 import {Camera} from "../camera";
+import {Chunk} from "../chunk";
 
-export const WORLD_WIDTH = 1024;
-export const WORLD_HEIGHT = 512;
+export const WORLD_WIDTH = 8192;
+export const WORLD_HEIGHT = 4096;
 
 export class World {
-    private readonly _width: number;
-    private readonly _height: number;
-    private readonly tiles: Uint16Array;
+    private readonly tiles: Uint8Array;
+    private readonly chunk: Chunk;
 
     public readonly tile: Tile;
     public readonly width: number;
     public readonly height: number;
+    public readonly widthInBlocks: number;
+    public readonly heightInBlocks: number;
 
     constructor() {
         this.tile = new Tile();
@@ -19,24 +21,19 @@ export class World {
         this.width = WORLD_WIDTH * TILE_SIZE;
         this.height = WORLD_HEIGHT * TILE_SIZE;
 
-        this._width = Math.floor(this.width / TILE_SIZE);
-        this._height = Math.floor(this.height / TILE_SIZE);
+        this.widthInBlocks = Math.floor(this.width / TILE_SIZE);
+        this.heightInBlocks = Math.floor(this.height / TILE_SIZE);
 
-        this.tiles = new Uint16Array((this.width * this.height) / TILE_SIZE);
-
-        let level = (40 + Math.round(Math.random() * 10));
-
-        for (let i = 0; i < 64; i++) {
-            this.tiles[(WORLD_WIDTH * (level + Math.floor(Math.random() * 2)) + i)] = 1;
-        }
+        this.tiles = new Uint8Array(this.widthInBlocks * this.heightInBlocks);
+        this.chunk = new Chunk(this);
     }
 
-    setTileId(x: number, y: number, id: number) {
-        this.tiles[Math.floor((Math.floor(y / TILE_SIZE) * this._width) + Math.floor(x / TILE_SIZE))] = id;
+    setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
+        this.tiles[Math.floor((Math.floor(y / projection) * this.widthInBlocks) + Math.floor(x / projection))] = id;
     }
 
     getTitleId(x: number, y: number): number {
-        return this.tiles[Math.floor((y * this._width) + x)];
+        return this.tiles[Math.floor((y * this.widthInBlocks) + x)];
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
@@ -53,5 +50,7 @@ export class World {
                 ctx.restore();
             }
         }
+
+        void this.chunk.generate(camera);
     }
 }

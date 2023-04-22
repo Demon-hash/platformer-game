@@ -19,6 +19,7 @@ export class Resource {
             crop(0, 0, TILE_SIZE, TILE_SIZE),
             crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
             crop(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE),
+            crop(TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE),
         ];
 
         return crops.map((crop, index) => ({

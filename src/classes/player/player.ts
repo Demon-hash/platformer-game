@@ -9,7 +9,7 @@ export class Player extends Entity {
 
     constructor() {
         super({
-            coords: new Vec2(240, 0),
+            coords: new Vec2(240, 4096 - 87),
             borders: new Borders(73, 86),
             sprite: {
                 src: 'https://s6.uupload.ir/files/images_byd7.png',
@@ -17,7 +17,7 @@ export class Player extends Entity {
             },
             misc: {
                 gravity: 0.5,
-                speed: 2
+                speed: 10
             }
         });
 

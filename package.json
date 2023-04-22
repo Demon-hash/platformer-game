@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alea": "^1.0.1",
+    "simplex-noise": "^4.0.1",
     "webpack": "^5.79.0"
   },
   "devDependencies": {
