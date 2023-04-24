@@ -31,7 +31,7 @@ export class Sprite {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame = 1, x?: number, y?: number) {
+    draw(ctx: CanvasRenderingContext2D, frame = 1, x?: number, y?: number, w?: number, h?: number) {
         if (!this.image || !this.cropBox) return;
 
         ctx.drawImage(
@@ -42,8 +42,8 @@ export class Sprite {
             this.cropBox.size.height,
             x ?? this.x,
             y ?? this.y,
-            this.cropBox.size.width,
-            this.cropBox.size.height
+            w ?? this.cropBox.size.width,
+            h ?? this.cropBox.size.height
         );
     }
 }

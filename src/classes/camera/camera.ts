@@ -1,8 +1,8 @@
 import {CameraHasFocus, CameraUpdate, CameraViewBorders} from "./types";
 import {TILE_SIZE} from "../tile";
 
-export const CAMERA_WIDTH = 1024;
-export const CAMERA_HEIGHT = 768;
+export const CAMERA_WIDTH = 1024; // 1024
+export const CAMERA_HEIGHT = 768; // 768
 
 export class Camera {
     public readonly w = CAMERA_WIDTH;

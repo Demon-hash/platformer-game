@@ -1,7 +1,7 @@
 import {CAMERA_HEIGHT, CAMERA_WIDTH} from "../camera";
 import {Scene} from "../scene";
 
-export const SCREEN_BACKGROUND_COLOR = "rgb(58,161,158)";
+export const SCREEN_BACKGROUND_COLOR = "rgb(145,175,173)";
 
 export class Screen {
     private scene: Scene;
@@ -15,11 +15,17 @@ export class Screen {
 
         this.resize();
         this.redraw();
+
+        setInterval(() => this.update(), 25);
     }
 
     private resize() {
         this.canvas.width = CAMERA_WIDTH;
         this.canvas.height = CAMERA_HEIGHT;
+    }
+
+    private update() {
+        this.scene.update();
     }
 
     private redraw() {

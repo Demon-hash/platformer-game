@@ -15,6 +15,7 @@ export class Chunk {
     private readonly world: World;
     private readonly chunks: ChunkData[];
     private readonly frequency: number;
+
     private readonly seed = new Date().valueOf();
     private z: number;
 
@@ -31,6 +32,27 @@ export class Chunk {
         }));
     }
 
+    private amplitude(min: number, max: number): number {
+        return Math.round(Math.random() * (max - min) + min);
+    }
+
+    private smooth(x: number, y: number, frequency: number): number {
+        const noise2D = createNoise2D(Alea(this.seed));
+        return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / frequency;
+    }
+
+    private fillDeep(x: number, y: number, level = 0) {
+        if (level === 1) {
+            for (let z = 16, i = 0; i < this.size; i++) {
+                this.world.setTileId(x, y + i, i >= z ? 3 : 2, 1);
+            }
+        } else {
+            for (let i = 0; i < this.size; i++) {
+                this.world.setTileId(x, y + i, 3, 1);
+            }
+        }
+    }
+
     setChunkData<K extends keyof ChunkData, V extends ChunkData[K]>(x: number, y: number, key: K, value: V) {
         this.chunks[this.getChunkId(x, y)][key] = value;
     }
@@ -41,21 +63,6 @@ export class Chunk {
 
     getChunkId(x: number, y: number) {
         return Math.floor((y * this.width) + x)
-    }
-
-    amplitude(min: number, max: number): number {
-        return Math.round(Math.random() * (max - min) + min);
-    }
-
-    smooth(x: number, y: number, frequency: number): number {
-        const noise2D = createNoise2D(Alea(this.seed));
-        return (noise2D(x, y - 1) + noise2D(x, y) + noise2D(x, y + 1)) / frequency;
-    }
-
-    fillDeep(x: number, y: number) {
-        for (let i = 0; i < this.size; i++) {
-            this.world.setTileId(x, y + i, 2, 1);
-        }
     }
 
     async generate(camera: Camera) {
@@ -70,23 +77,23 @@ export class Chunk {
             for (x = chunkXId - 1; x <= chunkXId + 1; x++) {
                 if (x < 0 || y < 0 || this.getChunkData(x, y, 'generated')) continue;
                 const sx = (x * this.size);
-                let w, range;
+                const sy = (y * this.size);
 
                 switch (y) {
                     case 0:
                         break;
                     case 1:
-                        for (w = 0; w < this.size; w++) {
-                            range = this.amplitude(-1, 1);
+                        for (let w = 0; w < this.size; w++) {
+                            const range = this.amplitude(-1, 1);
                             this.z += Math.floor(this.smooth(sx + w, this.z, this.frequency)) * range;
 
                             this.world.setTileId(sx + w, this.z, 1, 1);
-                            this.fillDeep(sx + w, this.z + 1);
+                            this.fillDeep(sx + w, this.z + 1, y);
                         }
                         break;
                     default:
-                        for (w = 0; w < this.size; w++) {
-                            this.fillDeep(sx + w, (y * this.size));
+                        for (let w = 0; w < this.size; w++) {
+                            this.fillDeep(sx + w, sy, y);
                         }
                         break;
                 }

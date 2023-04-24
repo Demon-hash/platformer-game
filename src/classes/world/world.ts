@@ -1,15 +1,17 @@
 import {Tile, TILE_SIZE} from "../tile";
 import {Camera} from "../camera";
 import {Chunk} from "../chunk";
+import {Liquid} from "../liquid";
 
 export const WORLD_WIDTH = 8192;
 export const WORLD_HEIGHT = 4096;
 
 export class World {
-    private readonly tiles: Uint8Array;
+    public tiles: Uint8Array;
     private readonly chunk: Chunk;
 
     public readonly tile: Tile;
+    public readonly liquid: Liquid;
     public readonly width: number;
     public readonly height: number;
     public readonly widthInBlocks: number;
@@ -25,15 +27,24 @@ export class World {
         this.heightInBlocks = Math.floor(this.height / TILE_SIZE);
 
         this.tiles = new Uint8Array(this.widthInBlocks * this.heightInBlocks);
+        this.liquid = new Liquid(this);
         this.chunk = new Chunk(this);
     }
 
     setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
         this.tiles[Math.floor((Math.floor(y / projection) * this.widthInBlocks) + Math.floor(x / projection))] = id;
+        this.liquid.sync(Math.floor(x / projection), Math.floor(y / projection), id);
+    }
+
+    addLiquid(x: number, y: number, projection = TILE_SIZE) {
+        this.liquid.addMass(Math.floor(x / projection), Math.floor(y / projection));
     }
 
     getTitleId(x: number, y: number): number {
         return this.tiles[Math.floor((y * this.widthInBlocks) + x)];
+    }
+
+    update() {
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

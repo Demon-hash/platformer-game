@@ -8,3 +8,4 @@ export * from './tile';
 export * from './world';
 export * from './level';
 export * from './scene';
+export * from './thread';

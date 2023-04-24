@@ -14,8 +14,12 @@ export class Level implements Scene {
         this.players = players;
 
         window.addEventListener('click', (event: MouseEvent) => {
-            this.world.setTileId(event.x + this.camera.x, event.y + this.camera.y, 1);
+            this.world.addLiquid(event.x + this.camera.x, event.y + this.camera.y);
         });
+    }
+
+    update() {
+        this.world.update();
     }
 
     draw(ctx: CanvasRenderingContext2D) {
