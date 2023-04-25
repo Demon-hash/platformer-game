@@ -1,5 +1,4 @@
 import {World} from "../world";
-import {TILE_SIZE} from "../tile";
 import {Thread} from "../thread";
 import {MessageType} from "./types";
 
@@ -7,29 +6,33 @@ export class Liquid {
     private readonly world: World;
     private readonly thread: Thread;
 
+    public masses: Float32Array;
+
     constructor(world: World) {
         this.world = world;
         this.thread = new Thread(new Worker(new URL('./worker.ts', import.meta.url)));
+        this.masses = new Float32Array(world.widthInBlocks * world.heightInBlocks);
 
         this.thread.send({
             type: MessageType.INIT,
             data: {
-                minMass: 0.0001,
-                maxMass: TILE_SIZE,
+                minMass: 0.01,
+                maxMass: 8,
                 compression: 0.02,
                 speed: 5,
-                minFlow: 1,
+                minFlow: 32,
                 width: world.widthInBlocks,
                 height: world.heightInBlocks,
-                masses: new Uint8Array(world.widthInBlocks * world.heightInBlocks),
-                updated: new Uint8Array(world.widthInBlocks * world.heightInBlocks),
+                masses: this.masses,
+                updated: new Float32Array(world.widthInBlocks * world.heightInBlocks),
                 tiles: world.tiles,
             }
         });
 
-        this.thread.get().subscribe(({tiles}) => {
+        this.thread.get().subscribe(({tiles, masses}) => {
             if (tiles?.length) {
-                world.tiles = Uint8Array.from(tiles);
+                world.tiles = tiles;
+                this.masses = masses;
             }
         });
     }
@@ -43,7 +46,7 @@ export class Liquid {
         })
     }
 
-    addMass(x: number, y: number, mass = TILE_SIZE) {
+    addMass(x: number, y: number, mass = 8) {
         this.thread.send({
             type: MessageType.ADD,
             data: {

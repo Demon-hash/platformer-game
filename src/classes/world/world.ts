@@ -3,8 +3,8 @@ import {Camera} from "../camera";
 import {Chunk} from "../chunk";
 import {Liquid} from "../liquid";
 
-export const WORLD_WIDTH = 8192;
-export const WORLD_HEIGHT = 4096;
+export const WORLD_WIDTH = 4000;
+export const WORLD_HEIGHT = 4000;
 
 export class World {
     public tiles: Uint8Array;
@@ -31,6 +31,10 @@ export class World {
         this.chunk = new Chunk(this);
     }
 
+    getId(x: number, y: number) {
+        return Math.floor((y * this.widthInBlocks) + x);
+    }
+
     setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
         this.tiles[Math.floor((Math.floor(y / projection) * this.widthInBlocks) + Math.floor(x / projection))] = id;
         this.liquid.sync(Math.floor(x / projection), Math.floor(y / projection), id);
@@ -41,7 +45,7 @@ export class World {
     }
 
     getTitleId(x: number, y: number): number {
-        return this.tiles[Math.floor((y * this.widthInBlocks) + x)];
+        return this.tiles[this.getId(x, y)];
     }
 
     update() {
@@ -57,7 +61,7 @@ export class World {
             for (x = viewXBegin; x < viewXEnd; x++) {
                 ctx.save();
                 ctx.translate(Math.floor((x * TILE_SIZE) - camera.x), Math.floor((y * TILE_SIZE) - camera.y));
-                this.tile.draw(this.getTitleId(x, y), ctx);
+                this.tile.draw(this.getTitleId(x, y), ctx, this.getId(x, y), this.liquid);
                 ctx.restore();
             }
         }

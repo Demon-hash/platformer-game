@@ -10,11 +10,11 @@ self.onmessage = ({data: {message: {type, data}}}) => {
     switch (type as MessageType) {
         case MessageType.INIT:
             settings = data;
-            setInterval(() => simulate(), 9);
+            setInterval(() => simulate(), 1);
             break;
         case MessageType.ADD:
-            for (let i = -15; i <= 15; i++) {
-                for (let j = -15; j <= 15; j++) {
+            for (let i = -4; i <= 4; i++) {
+                for (let j = -4; j <= 4; j++) {
                     settings.updated[getId(x + i, y + j)] = mass;
                 }
             }
@@ -56,11 +56,12 @@ function simulate() {
 
     self.postMessage({
         tiles: settings.tiles,
+        masses: settings.masses,
     })
 }
 
 function copyMasses() {
-    settings.masses = Uint8Array.from(settings.updated);
+    settings.masses = Float32Array.from(settings.updated);
 }
 
 function setWaterByMass() {
@@ -75,6 +76,7 @@ function setWaterByMass() {
                 setTileId(x, y, 11);
             } else if (id === 11) {
                 setTileId(x, y, 0);
+                settings.updated[id] = 0;
             }
         }
     }

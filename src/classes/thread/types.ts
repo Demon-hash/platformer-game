@@ -6,8 +6,8 @@ export interface ThreadArgs {
     minFlow: number;
     width: number;
     height: number;
-    masses: Uint8Array;
-    updated: Uint8Array;
+    masses: Float32Array;
+    updated: Float32Array;
     tiles: Uint8Array;
 }
 

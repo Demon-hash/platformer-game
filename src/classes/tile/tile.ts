@@ -1,5 +1,6 @@
 import {Resource} from "../resource";
 import {TileData} from "./types";
+import {Liquid} from "../liquid";
 
 export const TILE_SIZE = 16;
 
@@ -17,7 +18,15 @@ export class Tile {
         return this.resources[id][key];
     }
 
-    draw(id: number, ctx: CanvasRenderingContext2D) {
-        this.resources[id].sprite.draw(ctx);
+    draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid) {
+        switch (titleId) {
+            case 11:
+                const frame = Math.floor(Math.min(8 / liquid.masses[id], 8));
+                this.resources[titleId].sprite.draw(ctx, frame + 1);
+                break;
+            default:
+                this.resources[titleId].sprite.draw(ctx);
+                break;
+        }
     }
 }
