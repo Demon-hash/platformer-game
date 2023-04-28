@@ -1,8 +1,8 @@
-import {crop, Sprite, SpriteCrop} from "../sprite";
-import {TILE_SIZE, TileData} from "../tile";
+import { crop, Sprite, SpriteCrop } from '../sprite';
+import { TILE_SIZE, TileData } from '../tile';
 
-import sprites from "../../assets/sprites/sheet.png";
-import water from "../../assets/sprites/water.png";
+import sprites from '../../assets/sprites/sheet.png';
+import water from '../../assets/sprites/water.png';
 
 export class Resource {
     private toTileData(solid: boolean, name: string, crop: SpriteCrop, image = sprites) {
@@ -14,9 +14,9 @@ export class Resource {
                 x: 0,
                 y: 0,
                 src: image,
-                crop
-            })
-        }
+                crop,
+            }),
+        };
     }
 
     tiles(): TileData[] {
@@ -25,12 +25,12 @@ export class Resource {
             this.toTileData(true, 'TILE.GRASS', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)),
             this.toTileData(true, 'TILE.DIRT', crop(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE)),
             this.toTileData(true, 'TILE.STONE', crop(TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.MAHOGANY', crop(0, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.MAHOGANY_LEAVES', crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
+            this.toTileData(false, 'TILE.MAHOGANY', crop(0, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
+            this.toTileData(false, 'TILE.MAHOGANY_LEAVES', crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
             this.toTileData(true, 'TILE.SAND', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
             this.toTileData(true, 'TILE.SANDSTONE', crop(TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.PALM', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.PALM_LEAVES', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
+            this.toTileData(false, 'TILE.PALM', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
+            this.toTileData(false, 'TILE.PALM_LEAVES', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
             this.toTileData(false, 'TILE.UNKNOWN', crop(TILE_SIZE, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
             this.toTileData(false, 'TILE.WATER', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), water),
         ];

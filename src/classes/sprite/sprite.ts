@@ -1,14 +1,15 @@
-import {SpriteCrop, SpriteInstance} from "./types";
+import { SpriteCrop, SpriteInstance } from './types';
 
 export class Sprite {
     private readonly image: HTMLImageElement;
     private readonly x: number;
     private readonly y: number;
+
     private width: number;
     private height: number;
     private cropBox: SpriteCrop;
 
-    constructor({src, x, y, crop}: SpriteInstance) {
+    constructor({ src, x, y, crop }: SpriteInstance) {
         this.x = x;
         this.y = y;
         this.image = new Image();
@@ -25,10 +26,10 @@ export class Sprite {
                 },
                 size: {
                     width: crop?.size?.width ?? this.width,
-                    height: crop?.size?.height ?? this.height
-                }
+                    height: crop?.size?.height ?? this.height,
+                },
             };
-        }
+        };
     }
 
     draw(ctx: CanvasRenderingContext2D, frame = 1, x?: number, y?: number, w?: number, h?: number) {

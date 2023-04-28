@@ -1,2 +1,2 @@
-export {Resource} from './resource';
-export {Languages} from './types';
+export { Resource } from './resource';
+export { Languages } from './types';

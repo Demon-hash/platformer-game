@@ -1,1 +1,1 @@
-export {Borders} from './borders';
+export { Borders } from './borders';

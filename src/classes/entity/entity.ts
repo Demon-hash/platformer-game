@@ -95,8 +95,8 @@ export class Entity implements LifeCycle {
 
         for (let i = 0; i < rectangle.horizontal.iterations; i++) {
             if (
-                this.tile.get(this.world.getTitleId(rectangle.horizontal.x, rectangle.horizontal.y + i), 'solid') ||
-                this.tile.get(this.world.getTitleId(rectangle.horizontal.w, rectangle.horizontal.y + i), 'solid')
+                this.tile.get(this.world.getTileId(rectangle.horizontal.x, rectangle.horizontal.y + i), 'solid') ||
+                this.tile.get(this.world.getTileId(rectangle.horizontal.w, rectangle.horizontal.y + i), 'solid')
             ) {
                 this.velocity.x = 0;
             }
@@ -104,10 +104,10 @@ export class Entity implements LifeCycle {
 
         for (let i = 0; i < rectangle.vertical.iterations; i++) {
             if (
-                this.tile.get(this.world.getTitleId(rectangle.vertical.x + i, rectangle.vertical.y), 'solid') ||
-                this.tile.get(this.world.getTitleId(rectangle.vertical.x + i, rectangle.vertical.h), 'solid') ||
-                this.tile.get(this.world.getTitleId(rectangle.vertical.w, rectangle.vertical.y), 'solid') ||
-                this.tile.get(this.world.getTitleId(rectangle.vertical.w, rectangle.vertical.h), 'solid')
+                this.tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.y), 'solid') ||
+                this.tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.h), 'solid') ||
+                this.tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.y), 'solid') ||
+                this.tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.h), 'solid')
             ) {
                 switch (Math.sign(this.velocity.y)) {
                     case -1:

@@ -1,4 +1,4 @@
-import {Coords} from "../../types";
+import { Coords } from '../../types';
 
 export interface SpriteInstance {
     src: string;

@@ -1,12 +1,14 @@
-import {SpriteCrop} from "./types";
+import { SpriteCrop } from './types';
 
 export const crop = (x: number, y: number, width: number, height: number): SpriteCrop => {
-    return ({
+    return {
         offset: {
-            x, y
+            x,
+            y,
         },
         size: {
-            width, height
-        }
-    })
-}
+            width,
+            height,
+        },
+    };
+};

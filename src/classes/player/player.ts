@@ -1,8 +1,8 @@
-import {Entity} from "../entity";
-import {Camera} from "../camera";
-import {TILE_SIZE} from "../tile";
-import {crop} from "../sprite";
-import {Borders, Vec2} from "../math";
+import { crop } from '../sprite';
+import { TILE_SIZE } from '../tile';
+import { Entity } from '../entity';
+import { Camera } from '../camera';
+import { Borders, Vec2 } from '../math';
 
 export class Player extends Entity {
     public id: number;
@@ -13,18 +13,18 @@ export class Player extends Entity {
             borders: new Borders(73, 86),
             sprite: {
                 src: 'https://s6.uupload.ir/files/images_byd7.png',
-                crop: crop(73, 0, 73, 86)
+                crop: crop(73, 0, 73, 86),
             },
             misc: {
                 gravity: 0.5,
-                speed: 10
-            }
+                speed: 10,
+            },
         });
 
         this.useKeyboard();
 
         setInterval(() => {
-            this.frame = (this.frame + 1) % 8
+            this.frame = (this.frame + 1) % 8;
         }, 120);
     }
 

@@ -1,4 +1,4 @@
-import {Camera, Player, PlayersList, Screen, World, Level} from "./classes";
+import { Camera, Player, PlayersList, Screen, World, Level } from './classes';
 
 const world = new World();
 const camera = new Camera();

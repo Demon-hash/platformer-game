@@ -1,6 +1,6 @@
 import { Resource } from '../resource';
+import { Liquid, LIQUID_MAX_MASS } from '../liquid';
 import { TileData } from './types';
-import { Liquid } from '../liquid';
 
 export const TILE_SIZE = 16;
 
@@ -25,7 +25,7 @@ export class Tile {
     draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid) {
         switch (titleId) {
             case 11:
-                const frame = Math.floor(Math.min(8 / liquid.masses[id], 8));
+                const frame = Math.floor(Math.min(LIQUID_MAX_MASS / liquid.masses[id], LIQUID_MAX_MASS));
                 this.resources[titleId].sprite.draw(ctx, frame + 1);
                 break;
             default:

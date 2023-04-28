@@ -1,1 +1,1 @@
-export {PlayersList} from './players-list';
+export { PlayersList } from './players-list';

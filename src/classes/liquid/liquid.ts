@@ -1,16 +1,14 @@
 import { World } from '../world';
 import { Thread } from '../thread';
 import { MessageType } from './types';
-import { TILE_SIZE } from '../tile';
+
+export const LIQUID_MAX_MASS = 8;
 
 export class Liquid {
-    private readonly world: World;
     private readonly thread: Thread;
-
     public masses: Float32Array;
 
     constructor(world: World) {
-        this.world = world;
         this.thread = new Thread(new Worker(new URL('./worker.ts', import.meta.url)));
         this.masses = new Float32Array(world.widthInBlocks * world.heightInBlocks);
 
@@ -18,7 +16,7 @@ export class Liquid {
             type: MessageType.INIT,
             data: {
                 minMass: 0.01,
-                maxMass: Math.floor(TILE_SIZE / 2),
+                maxMass: LIQUID_MAX_MASS,
                 compression: 0.02,
                 speed: 5,
                 minFlow: 32,
@@ -26,14 +24,14 @@ export class Liquid {
                 height: world.heightInBlocks,
                 masses: this.masses,
                 updated: new Float32Array(world.widthInBlocks * world.heightInBlocks),
-                tiles: world.tiles,
+                tiles: world.data(),
                 instances: world.tile.data().map(({ sprite, ...rest }) => rest),
             },
         });
 
         this.thread.get().subscribe(({ tiles, masses }) => {
             if (tiles?.length) {
-                world.tiles = tiles;
+                world.setData(tiles);
                 this.masses = masses;
             }
         });
@@ -42,22 +40,14 @@ export class Liquid {
     sync(x: number, y: number, id: number) {
         this.thread.send({
             type: MessageType.SYNC,
-            data: {
-                x,
-                y,
-                id,
-            },
+            data: { x, y, id },
         });
     }
 
-    addMass(x: number, y: number, mass = Math.floor(TILE_SIZE / 2)) {
+    addMass(x: number, y: number, mass = LIQUID_MAX_MASS) {
         this.thread.send({
             type: MessageType.ADD,
-            data: {
-                x,
-                y,
-                mass,
-            },
+            data: { x, y, mass },
         });
     }
 }

@@ -1,5 +1,5 @@
-import {Coords} from "../../types";
-import {SpriteBorders, SpriteCrop} from "../sprite";
+import { Coords } from '../../types';
+import { SpriteBorders, SpriteCrop } from '../sprite';
 
 export interface EntityInstance {
     coords: Coords;
@@ -7,9 +7,9 @@ export interface EntityInstance {
     sprite: {
         src: string;
         crop: SpriteCrop;
-    },
+    };
     misc: {
         speed: number;
         gravity: number;
-    }
+    };
 }

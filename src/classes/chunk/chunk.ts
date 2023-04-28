@@ -3,7 +3,9 @@ import { createNoise2D } from 'simplex-noise';
 import { World } from '../world';
 import { Camera } from '../camera';
 import { TILE_SIZE } from '../tile';
-import { ChunkData } from './types';
+import { Plants } from '../plants';
+import { ChunkData, ChunkType } from './types';
+import { Biom } from '../biom/biom';
 
 export class Chunk {
     private readonly width: number;
@@ -13,10 +15,15 @@ export class Chunk {
     private readonly chunks: ChunkData[];
     private readonly frequency: number;
     private readonly seed = new Date().valueOf();
+    private readonly plants: Plants;
+    private readonly biom: Biom;
 
     private gradation: number;
 
     constructor(world: World, size: number = 256) {
+        this.plants = new Plants(world);
+        this.biom = new Biom();
+
         this.world = world;
         this.size = size;
         this.width = Math.ceil(this.world.widthInBlocks / this.size);
@@ -25,8 +32,14 @@ export class Chunk {
         this.gradation = this.size;
 
         this.chunks = new Array(this.width * this.height).fill(null).map(() => ({
+            type: ChunkType.UNINITIALIZED,
             generated: false,
         }));
+    }
+
+    private getType() {
+        const type = [ChunkType.MEADOW, ChunkType.BEACH];
+        return type[Math.floor(Math.random() * type.length)];
     }
 
     private amplitude(min: number, max: number): number {
@@ -38,28 +51,28 @@ export class Chunk {
         return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / this.frequency;
     }
 
-    private fillDeep(x: number, y: number, level = 0) {
+    private fillDeep(x: number, y: number, dirt: number, stone: number, level = 0) {
         if (level === 1) {
             for (let z = 16, i = 0; i < this.size; i++) {
-                this.world.setTileId(x, y + i, i >= z ? 3 : 2, 1);
+                this.world.setTileId(x, y + i, i >= z ? stone : dirt, 1);
             }
         } else {
             for (let i = 0; i < this.size; i++) {
-                this.world.setTileId(x, y + i, 3, 1);
+                this.world.setTileId(x, y + i, stone, 1);
             }
         }
     }
 
-    setChunkData<K extends keyof ChunkData, V extends ChunkData[K]>(x: number, y: number, key: K, value: V) {
+    private getChunkId(x: number, y: number) {
+        return Math.floor(y * this.width + x);
+    }
+
+    private setChunkData<K extends keyof ChunkData, V extends ChunkData[K]>(x: number, y: number, key: K, value: V) {
         this.chunks[this.getChunkId(x, y)][key] = value;
     }
 
-    getChunkData(x: number, y: number, key: keyof ChunkData) {
+    private getChunkData(x: number, y: number, key: keyof ChunkData) {
         return this.chunks[this.getChunkId(x, y)][key];
-    }
-
-    getChunkId(x: number, y: number) {
-        return Math.floor(y * this.width + x);
     }
 
     generate(camera: Camera) {
@@ -82,16 +95,20 @@ export class Chunk {
                     case 0:
                         break;
                     case 1:
+                        const type = this.getType();
+                        const { cover, dirt, stone } = this.biom.data(type);
+
                         for (let w = 0; w < this.size; w++) {
                             this.gradation += Math.floor(this.smooth(sx + w, this.gradation)) * this.amplitude(-1, 1);
 
-                            this.world.setTileId(sx + w, this.gradation, 1, 1);
-                            this.fillDeep(sx + w, this.gradation + 1, y);
+                            this.plants.tree(sx + w, this.gradation, type);
+                            this.world.setTileId(sx + w, this.gradation, cover, 1);
+                            this.fillDeep(sx + w, this.gradation + 1, dirt, stone, y);
                         }
                         break;
                     default:
                         for (let w = 0; w < this.size; w++) {
-                            this.fillDeep(sx + w, sy, y);
+                            this.fillDeep(sx + w, sy, 6, 6, y);
                         }
                         break;
                 }

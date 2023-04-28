@@ -12,6 +12,11 @@ export class Rectangle {
     }
 
     collision(rectangle: Rectangle) {
-        return (this.left >= rectangle.left && this.right <= this.right && this.top >= rectangle.top && this.down <= rectangle.down)
+        return (
+            this.left >= rectangle.left &&
+            this.right <= this.right &&
+            this.top >= rectangle.top &&
+            this.down <= rectangle.down
+        );
     }
 }
