@@ -5,7 +5,7 @@ import { Camera } from '../camera';
 import { TILE_SIZE } from '../tile';
 import { Plants } from '../plants';
 import { ChunkData, ChunkType } from './types';
-import { Biom } from '../biom/biom';
+import { Biom } from '../biom';
 
 export class Chunk {
     private readonly width: number;

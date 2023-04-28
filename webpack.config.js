@@ -3,12 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        'app': path.resolve(__dirname, './src/index.ts'),
+        app: path.resolve(__dirname, './src/index.ts'),
     },
     mode: 'development',
     output: {
-        path: path.resolve(__dirname, "dist"),
-        filename: "[name].js"
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js',
     },
     module: {
         rules: [
@@ -33,10 +33,10 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "App",
-            filename: "index.html",
-            template: "./src/template.html"
-        })
+            title: 'App',
+            filename: 'index.html',
+            template: './src/template.html',
+        }),
     ],
     devServer: {
         static: {
@@ -44,5 +44,12 @@ module.exports = {
         },
         compress: true,
         port: 9000,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Cross-Origin-Embedder-Policy': 'require-corp',
+            'Cross-Origin-Opener-Policy': 'same-origin',
+        },
     },
 };

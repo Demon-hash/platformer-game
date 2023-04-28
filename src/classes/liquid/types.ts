@@ -3,7 +3,6 @@ import { TileData } from '../tile';
 export const enum MessageType {
     INIT = 'INIT',
     ADD = 'ADD',
-    SYNC = 'SYNC',
 }
 
 export type LiquidDataInstance = Exclude<TileData, 'sprite'>;

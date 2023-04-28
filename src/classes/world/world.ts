@@ -27,7 +27,7 @@ export class World {
         this.widthInBlocks = Math.floor(this.width / TILE_SIZE);
         this.heightInBlocks = Math.floor(this.height / TILE_SIZE);
 
-        this.tiles = new Uint8Array(this.widthInBlocks * this.heightInBlocks);
+        this.tiles = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
         this.liquid = new Liquid(this);
         this.chunk = new Chunk(this);
     }
@@ -38,7 +38,6 @@ export class World {
 
     setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
         this.tiles[Math.floor(Math.floor(y / projection) * this.widthInBlocks + Math.floor(x / projection))] = id;
-        this.liquid.sync(Math.floor(x / projection), Math.floor(y / projection), id);
     }
 
     getTileId(x: number, y: number): number {
@@ -47,10 +46,6 @@ export class World {
 
     addLiquid(x: number, y: number, mass = LIQUID_MAX_MASS, projection = TILE_SIZE) {
         this.liquid.addMass(Math.floor(x / projection), Math.floor(y / projection), mass);
-    }
-
-    setData(tiles: Uint8Array) {
-        this.tiles = tiles;
     }
 
     data() {

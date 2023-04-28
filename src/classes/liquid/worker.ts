@@ -7,7 +7,7 @@ self.onmessage = ({
         message: { type, data },
     },
 }) => {
-    const { x, y, mass, id } = data;
+    const { x, y, mass } = data;
 
     switch (type as MessageType) {
         case MessageType.INIT:
@@ -16,9 +16,6 @@ self.onmessage = ({
             break;
         case MessageType.ADD:
             settings.updated[getId(x, y)] = mass;
-            break;
-        case MessageType.SYNC:
-            settings.tiles[getId(x, y)] = id;
             break;
         default:
             break;
@@ -48,15 +45,14 @@ function simulate() {
     update();
     copyMasses();
     setWaterByMass();
-
-    self.postMessage({
-        tiles: settings.tiles,
-        masses: settings.masses,
-    });
 }
 
 function copyMasses() {
-    settings.masses = Float32Array.from(settings.updated);
+    for (let x, y = 0; y < settings.height; y++) {
+        for (x = 0; x < settings.width; x++) {
+            settings.masses[getId(x, y)] = settings.updated[getId(x, y)];
+        }
+    }
 }
 
 function setWaterByMass() {
@@ -101,7 +97,7 @@ function getMassValue(x: number, y: number): number {
     return settings.masses[getId(x, y)];
 }
 
-function updateMassValue(x: number, y: number, value: number): void {
+function updateMassValue(x: number, y: number, value: number) {
     const id = getId(x, y);
     if (settings.updated[id] + value < 0) {
         settings.updated[id] = 0;
@@ -110,7 +106,7 @@ function updateMassValue(x: number, y: number, value: number): void {
     }
 }
 
-function getFlowAmount(total: number): number {
+function getFlowAmount(total: number) {
     if (total <= 1) {
         return 1;
     }

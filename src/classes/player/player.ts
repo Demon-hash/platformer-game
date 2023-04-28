@@ -4,16 +4,18 @@ import { Entity } from '../entity';
 import { Camera } from '../camera';
 import { Borders, Vec2 } from '../math';
 
+import sprite from '../../assets/sprites/hero.png';
+
 export class Player extends Entity {
     public id: number;
 
     constructor() {
         super({
             coords: new Vec2(240, 4096 - 87),
-            borders: new Borders(73, 86),
+            borders: new Borders(64, 35),
             sprite: {
-                src: 'https://s6.uupload.ir/files/images_byd7.png',
-                crop: crop(73, 0, 73, 86),
+                src: sprite,
+                crop: crop(64, 0, 64, 35),
             },
             misc: {
                 gravity: 0.5,
