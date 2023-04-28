@@ -1,2 +1,2 @@
-export {Liquid} from './liquid';
-export {MessageType} from './types';
+export { Liquid } from './liquid';
+export { MessageType, LiquidArgs, LiquidDataInstance } from './types';

@@ -1,5 +1,5 @@
-import {BehaviorSubject, Observable} from "rxjs";
-import {ThreadEvent} from "./types";
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ThreadEvent } from './types';
 
 export class Thread {
     private readonly thread: Worker;
@@ -10,13 +10,19 @@ export class Thread {
         this.thread.onmessage = (message) => this.data.next(message.data);
     }
 
-    send({type, data}: ThreadEvent) {
+    detach() {
+        if (this.thread instanceof Worker) {
+            this.thread.terminate();
+        }
+    }
+
+    send({ type, data }: ThreadEvent) {
         this.thread.postMessage({
             message: {
                 type,
-                data
-            }
-        })
+                data,
+            },
+        });
     }
 
     get(): Observable<unknown> {

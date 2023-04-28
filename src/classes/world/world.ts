@@ -3,8 +3,8 @@ import {Camera} from "../camera";
 import {Chunk} from "../chunk";
 import {Liquid} from "../liquid";
 
-export const WORLD_WIDTH = 4000;
-export const WORLD_HEIGHT = 4000;
+export const WORLD_WIDTH = 2048;
+export const WORLD_HEIGHT = 2048;
 
 export class World {
     public tiles: Uint8Array;
@@ -46,9 +46,6 @@ export class World {
 
     getTitleId(x: number, y: number): number {
         return this.tiles[this.getId(x, y)];
-    }
-
-    update() {
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

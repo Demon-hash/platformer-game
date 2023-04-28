@@ -15,17 +15,11 @@ export class Screen {
 
         this.resize();
         this.redraw();
-
-        setInterval(() => this.update(), 25);
     }
 
     private resize() {
         this.canvas.width = CAMERA_WIDTH;
         this.canvas.height = CAMERA_HEIGHT;
-    }
-
-    private update() {
-        this.scene.update();
     }
 
     private redraw() {

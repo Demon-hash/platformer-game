@@ -1,2 +1,2 @@
-export {Thread} from './thread';
-export {ThreadArgs, ThreadEvent} from './types';
+export { Thread } from './thread';
+export { ThreadEvent } from './types';

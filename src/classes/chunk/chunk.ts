@@ -1,12 +1,9 @@
-import {World} from "../world";
-import {Camera} from "../camera";
-import {TILE_SIZE} from "../tile";
-import {createNoise2D} from "simplex-noise";
-import Alea from "alea";
-
-interface ChunkData {
-    generated: boolean;
-}
+import Alea from 'alea';
+import { createNoise2D } from 'simplex-noise';
+import { World } from '../world';
+import { Camera } from '../camera';
+import { TILE_SIZE } from '../tile';
+import { ChunkData } from './types';
 
 export class Chunk {
     private readonly width: number;
@@ -15,9 +12,9 @@ export class Chunk {
     private readonly world: World;
     private readonly chunks: ChunkData[];
     private readonly frequency: number;
-
     private readonly seed = new Date().valueOf();
-    private z: number;
+
+    private gradation: number;
 
     constructor(world: World, size: number = 256) {
         this.world = world;
@@ -25,10 +22,10 @@ export class Chunk {
         this.width = Math.ceil(this.world.widthInBlocks / this.size);
         this.height = Math.ceil(this.world.heightInBlocks / this.size);
         this.frequency = Math.floor(this.width / 2);
-        this.z = this.size;
+        this.gradation = this.size;
 
         this.chunks = new Array(this.width * this.height).fill(null).map(() => ({
-            generated: false
+            generated: false,
         }));
     }
 
@@ -36,9 +33,9 @@ export class Chunk {
         return Math.round(Math.random() * (max - min) + min);
     }
 
-    private smooth(x: number, y: number, frequency: number): number {
+    private smooth(x: number, y: number): number {
         const noise2D = createNoise2D(Alea(this.seed));
-        return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / frequency;
+        return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / this.frequency;
     }
 
     private fillDeep(x: number, y: number, level = 0) {
@@ -62,33 +59,34 @@ export class Chunk {
     }
 
     getChunkId(x: number, y: number) {
-        return Math.floor((y * this.width) + x)
+        return Math.floor(y * this.width + x);
     }
 
-    async generate(camera: Camera) {
-        const centerX = ((camera.x + camera.w) / 2);
-        const centerY = ((camera.y + camera.h) / 2);
-        const chunkSize = (this.size * TILE_SIZE);
+    generate(camera: Camera) {
+        const centerX = (camera.x + camera.w) / 2;
+        const centerY = (camera.y + camera.h) / 2;
+        const chunkSize = this.size * TILE_SIZE;
 
         const chunkXId = Math.floor(centerX / (chunkSize / 2));
         const chunkYId = Math.floor(centerY / (chunkSize / 2));
 
         for (let x, y = chunkYId - 1; y <= chunkYId + 1; y++) {
             for (x = chunkXId - 1; x <= chunkXId + 1; x++) {
-                if (x < 0 || y < 0 || this.getChunkData(x, y, 'generated')) continue;
-                const sx = (x * this.size);
-                const sy = (y * this.size);
+                if (x < 0 || y < 0 || x >= this.width || y >= this.height || this.getChunkData(x, y, 'generated'))
+                    continue;
+
+                const sx = x * this.size;
+                const sy = y * this.size;
 
                 switch (y) {
                     case 0:
                         break;
                     case 1:
                         for (let w = 0; w < this.size; w++) {
-                            const range = this.amplitude(-1, 1);
-                            this.z += Math.floor(this.smooth(sx + w, this.z, this.frequency)) * range;
+                            this.gradation += Math.floor(this.smooth(sx + w, this.gradation)) * this.amplitude(-1, 1);
 
-                            this.world.setTileId(sx + w, this.z, 1, 1);
-                            this.fillDeep(sx + w, this.z + 1, y);
+                            this.world.setTileId(sx + w, this.gradation, 1, 1);
+                            this.fillDeep(sx + w, this.gradation + 1, y);
                         }
                         break;
                     default:

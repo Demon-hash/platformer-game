@@ -1,11 +1,13 @@
-import {ThreadArgs} from "../thread";
-import {MessageType} from "./types";
-import {TileData} from "../tile";
+import { LiquidArgs, LiquidDataInstance, MessageType } from './types';
 
-let settings: ThreadArgs;
+let settings: LiquidArgs;
 
-self.onmessage = ({data: {message: {type, data}}}) => {
-    const {x, y, mass, id} = data;
+self.onmessage = ({
+    data: {
+        message: { type, data },
+    },
+}) => {
+    const { x, y, mass, id } = data;
 
     switch (type as MessageType) {
         case MessageType.INIT:
@@ -13,11 +15,7 @@ self.onmessage = ({data: {message: {type, data}}}) => {
             setInterval(() => simulate(), 1);
             break;
         case MessageType.ADD:
-            for (let i = -4; i <= 4; i++) {
-                for (let j = -4; j <= 4; j++) {
-                    settings.updated[getId(x + i, y + j)] = mass;
-                }
-            }
+            settings.updated[getId(x, y)] = mass;
             break;
         case MessageType.SYNC:
             settings.tiles[getId(x, y)] = id;
@@ -42,9 +40,6 @@ function update() {
             if (remainingMass <= 0) continue;
 
             remainingMass = horizontal(x, y, 1, remainingMass);
-            if (remainingMass <= 0) continue;
-
-            // vertical(x, y, -1, remainingMass);
         }
     }
 }
@@ -57,7 +52,7 @@ function simulate() {
     self.postMessage({
         tiles: settings.tiles,
         masses: settings.masses,
-    })
+    });
 }
 
 function copyMasses() {
@@ -68,7 +63,7 @@ function setWaterByMass() {
     for (let id, x, y = 0; y < settings.height; y++) {
         for (x = 0; x < settings.width; x++) {
             id = getTileId(x, y);
-            if (getTileProperty(id, 'solid')) {
+            if (getInstanceProperty(id, 'solid')) {
                 continue;
             }
 
@@ -87,19 +82,19 @@ function clamp(num: number, min: number, max: number) {
 }
 
 function getId(x: number, y: number): number {
-    return Math.floor((y * settings.width) + x);
+    return Math.floor(y * settings.width + x);
 }
 
 function getTileId(x: number, y: number) {
     return settings.tiles[getId(x, y)];
 }
 
-function getTileProperty(id: number, key: keyof TileData) {
-    return id > 0 && id !== 11;
+function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
+    return settings.instances[id][key];
 }
 
 function setTileId(x: number, y: number, id: number) {
-    return settings.tiles[getId(x, y)] = id;
+    return (settings.tiles[getId(x, y)] = id);
 }
 
 function getMassValue(x: number, y: number): number {
@@ -129,15 +124,16 @@ function getFlowAmount(total: number): number {
 }
 
 function vertical(x: number, y: number, direction: number, remainMass: number) {
-    if (getTileProperty(getTileId(x, y + direction), 'solid')) {
+    if (getInstanceProperty(getTileId(x, y + direction), 'solid')) {
         return remainMass;
     }
 
     const neighborMass = getMassValue(x, y + direction);
 
-    let flow = (direction === 1)
-        ? getFlowAmount(remainMass + neighborMass) - neighborMass
-        : getFlowAmount(remainMass + neighborMass);
+    let flow =
+        direction === 1
+            ? getFlowAmount(remainMass + neighborMass) - neighborMass
+            : getFlowAmount(remainMass + neighborMass);
 
     if (flow > settings.minFlow) {
         flow *= 0.5;
@@ -151,7 +147,7 @@ function vertical(x: number, y: number, direction: number, remainMass: number) {
 }
 
 function horizontal(x: number, y: number, direction: number, remainMass: number) {
-    if (getTileProperty(getTileId(x + direction, y), 'solid')) {
+    if (getInstanceProperty(getTileId(x + direction, y), 'solid')) {
         return remainMass;
     }
 

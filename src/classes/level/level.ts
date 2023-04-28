@@ -1,7 +1,7 @@
-import {Scene} from "../scene";
-import {World} from "../world";
-import {Camera} from "../camera";
-import {PlayersList} from "../players-list";
+import { Scene } from '../scene';
+import { World } from '../world';
+import { Camera } from '../camera';
+import { PlayersList } from '../players-list';
 
 export class Level implements Scene {
     private readonly camera: Camera;
@@ -16,10 +16,6 @@ export class Level implements Scene {
         window.addEventListener('click', (event: MouseEvent) => {
             this.world.addLiquid(event.x + this.camera.x, event.y + this.camera.y);
         });
-    }
-
-    update() {
-        this.world.update();
     }
 
     draw(ctx: CanvasRenderingContext2D) {

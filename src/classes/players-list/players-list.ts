@@ -21,25 +21,26 @@ export class PlayersList {
     }
 
     draw(camera: Camera, world: World, ctx: CanvasRenderingContext2D) {
+        const target = camera.getAttachedId();
         for (const [index, player] of this.players.entries()) {
             switch (index) {
-                case camera.id:
-                    camera.update({
-                        x: player.coords.x,
-                        y: player.coords.y,
-                        ww: world.width,
-                        wh: world.height
-                    });
+                case target:
+                    camera.update(
+                        player.coords.x,
+                        player.coords.y,
+                        world.width,
+                        world.height
+                    );
                     player.update();
                     player.draw(ctx, camera);
                     break;
                 default:
-                    if (camera.hasFocusAt({
-                        x: player.coords.x,
-                        y: player.coords.y,
-                        w: player.borders.width,
-                        h: player.borders.height
-                    })) {
+                    if (camera.hasFocusAt(
+                        player.coords.x,
+                        player.coords.y,
+                        player.borders.width,
+                        player.borders.height
+                    )) {
                         player.update();
                         player.draw(ctx, camera);
                     }

@@ -1,6 +1,7 @@
-import {World} from "../world";
-import {Thread} from "../thread";
-import {MessageType} from "./types";
+import { World } from '../world';
+import { Thread } from '../thread';
+import { MessageType } from './types';
+import { TILE_SIZE } from '../tile';
 
 export class Liquid {
     private readonly world: World;
@@ -17,7 +18,7 @@ export class Liquid {
             type: MessageType.INIT,
             data: {
                 minMass: 0.01,
-                maxMass: 8,
+                maxMass: Math.floor(TILE_SIZE / 2),
                 compression: 0.02,
                 speed: 5,
                 minFlow: 32,
@@ -26,10 +27,11 @@ export class Liquid {
                 masses: this.masses,
                 updated: new Float32Array(world.widthInBlocks * world.heightInBlocks),
                 tiles: world.tiles,
-            }
+                instances: world.tile.data().map(({ sprite, ...rest }) => rest),
+            },
         });
 
-        this.thread.get().subscribe(({tiles, masses}) => {
+        this.thread.get().subscribe(({ tiles, masses }) => {
             if (tiles?.length) {
                 world.tiles = tiles;
                 this.masses = masses;
@@ -41,17 +43,21 @@ export class Liquid {
         this.thread.send({
             type: MessageType.SYNC,
             data: {
-                x, y, id
+                x,
+                y,
+                id,
             },
-        })
+        });
     }
 
-    addMass(x: number, y: number, mass = 8) {
+    addMass(x: number, y: number, mass = Math.floor(TILE_SIZE / 2)) {
         this.thread.send({
             type: MessageType.ADD,
             data: {
-                x, y, mass
-            }
+                x,
+                y,
+                mass,
+            },
         });
     }
 }

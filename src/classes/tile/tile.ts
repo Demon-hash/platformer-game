@@ -1,6 +1,6 @@
-import {Resource} from "../resource";
-import {TileData} from "./types";
-import {Liquid} from "../liquid";
+import { Resource } from '../resource';
+import { TileData } from './types';
+import { Liquid } from '../liquid';
 
 export const TILE_SIZE = 16;
 
@@ -12,6 +12,10 @@ export class Tile {
     constructor() {
         this.resource = new Resource();
         this.resources = this.resource.tiles();
+    }
+
+    data() {
+        return this.resources;
     }
 
     get(id: number, key: keyof TileData) {
