@@ -1,1 +1,1 @@
-export { Screen, SCREEN_BACKGROUND_COLOR } from './screen';
+export { Screen, SCREEN_BACKGROUND_COLOR } from './screen.class';

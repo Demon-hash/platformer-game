@@ -1,5 +1,7 @@
 import type { Scene } from '@scene/scene';
-import { CAMERA_HEIGHT, CAMERA_WIDTH } from '@camera/camera';
+import { Camera, CAMERA_HEIGHT, CAMERA_WIDTH } from '@camera/camera.class';
+import { Inventory } from '@inventory/inventory.class';
+import { Cursor } from '@cursor/cursor.class';
 
 export const SCREEN_BACKGROUND_COLOR = 'rgb(145,175,173)';
 
@@ -8,6 +10,11 @@ export class Screen {
 
     private readonly _ctx: CanvasRenderingContext2D;
     private readonly _canvas: HTMLCanvasElement;
+
+    private readonly _inventory: Inventory;
+    private readonly _cursor: Cursor;
+
+    private readonly _camera: Camera;
 
     private _scene: Scene;
 
@@ -21,8 +28,20 @@ export class Screen {
         this._canvas = document.getElementById('screen') as HTMLCanvasElement;
         this._ctx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
 
+        this._cursor = new Cursor(this._canvas);
+        this._inventory = new Inventory();
+        this._camera = new Camera();
+
         this._resize();
         this._redraw();
+    }
+
+    setScene(scene: Scene) {
+        this._scene = scene;
+    }
+
+    getScene(): Scene | undefined {
+        return this._scene;
     }
 
     private _resize() {
@@ -41,14 +60,8 @@ export class Screen {
 
         if (this._scene) {
             this._scene.draw(this._ctx);
+            this._inventory.draw(this._ctx, this._camera);
+            this._cursor.draw(this._ctx);
         }
-    }
-
-    setScene(scene: Scene) {
-        this._scene = scene;
-    }
-
-    getScene(): Scene | undefined {
-        return this._scene;
     }
 }

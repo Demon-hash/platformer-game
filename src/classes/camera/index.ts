@@ -1,1 +1,1 @@
-export { Camera, CAMERA_HEIGHT, CAMERA_WIDTH } from './camera';
+export { Camera, CAMERA_HEIGHT, CAMERA_WIDTH } from './camera.class';

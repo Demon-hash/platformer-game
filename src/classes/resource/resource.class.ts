@@ -1,8 +1,8 @@
 import type { TileData } from '@tile/types';
 import type { SpriteCrop } from '@sprite/types';
-import { TILE_SIZE } from '@tile/tile';
+import { TILE_SIZE } from '@tile/tile.class';
 import { crop } from '@sprite/crop';
-import { Sprite } from '@sprite/sprite';
+import { Sprite } from '@sprite/sprite.class';
 import { TileEnum } from '@resources/tile.enum';
 
 import sprites from '@sprites/sheet.png';

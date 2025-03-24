@@ -1,10 +1,10 @@
 import Alea from 'alea';
 import { createNoise2D } from 'simplex-noise';
-import { TILE_SIZE } from '@tile/tile';
+import { TILE_SIZE } from '@tile/tile.class';
 import { type ChunkData, ChunkType } from '@chunk/types';
-import { Biom } from '@biom/biom';
-import type { World } from '@world/world';
-import type { Camera } from '@camera/camera';
+import { Biom } from '@biom/biom.class';
+import type { World } from '@world/world.class';
+import type { Camera } from '@camera/camera.class';
 import { TileEnum } from '@resources/tile.enum';
 
 const ChunkTypes = [ChunkType.MEADOW, ChunkType.BEACH];

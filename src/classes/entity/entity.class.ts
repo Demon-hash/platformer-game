@@ -1,11 +1,11 @@
-import type { World } from '@world/world';
+import type { World } from '@world/world.class';
 import type { SpriteBorders } from '@sprite/types';
 import type { EntityInstance, EntityLifeCycle } from '@entity/types';
-import type { Camera } from '@camera/camera';
+import type { Camera } from '@camera/camera.class';
 import type { Coords } from '@global-types';
 import { Vec2 } from '@math/vec2';
-import { Sprite } from '@sprite/sprite';
-import { Tile, TILE_SIZE } from '@tile/tile';
+import { Sprite } from '@sprite/sprite.class';
+import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { KEYBOARD_CONFIG } from '@config/keyboard';
 
 export class Entity implements EntityLifeCycle {

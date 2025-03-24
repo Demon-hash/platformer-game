@@ -1,7 +1,7 @@
-import type { Camera } from '@camera/camera';
-import { Chunk } from '@chunk/chunk';
-import { Tile, TILE_SIZE } from '@tile/tile';
-import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid';
+import type { Camera } from '@camera/camera.class';
+import { Chunk } from '@chunk/chunk.class';
+import { Tile, TILE_SIZE } from '@tile/tile.class';
+import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
 
 export const WORLD_WIDTH = 2048;
 export const WORLD_HEIGHT = 2048;

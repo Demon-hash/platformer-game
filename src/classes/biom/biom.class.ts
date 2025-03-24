@@ -1,8 +1,8 @@
 import type { BiomData } from './types';
 import { ChunkType } from '@chunk/types';
-import { BeachBiom } from '@biom/types/beach.biom';
-import { MeadowBiom } from '@biom/types/meadow.biom';
-import { UnknownBiom } from '@biom/types/unknown.biom';
+import { BeachBiom } from '@biom/types/beach-biom.class';
+import { MeadowBiom } from '@biom/types/meadow-biom.class';
+import { UnknownBiom } from '@biom/types/unknown-biom.class';
 
 export class Biom {
     private static _instance?: Biom;

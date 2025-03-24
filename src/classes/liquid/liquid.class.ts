@@ -1,5 +1,5 @@
-import type { World } from '@world/world';
-import { Thread } from '@thread/thread';
+import type { World } from '@world/world.class';
+import { Thread } from '@thread/thread.class';
 import { MessageType } from '@liquid/types';
 
 export const LIQUID_MAX_MASS = 8;

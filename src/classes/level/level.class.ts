@@ -1,7 +1,7 @@
 import type { Scene } from '@scene/scene';
-import type { Camera } from '@camera/camera';
-import type { World } from '@world/world';
-import type { PlayersList } from '@players-list/players-list';
+import type { Camera } from '@camera/camera.class';
+import type { World } from '@world/world.class';
+import type { PlayersList } from '@players-list/players-list.class';
 
 export class Level implements Scene {
     private static _instance?: Level;

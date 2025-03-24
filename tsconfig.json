@@ -18,9 +18,11 @@
     "paths": {
       "@global-types": ["types/index.ts"],
       "@config/*": ["config/*"],
-      "@sprites/*": ["assets/sprites/*"],
-      "@i18n/*": ["assets/i18n/*"],
       "@types/*": ["config/types/*"],
+      "@sprites/*": ["assets/sprites/*"],
+      "@cursor/*": ["classes/cursor/*"],
+      "@inventory/*": ["classes/inventory/*"],
+      "@i18n/*": ["assets/i18n/*"],
       "@biom/*": ["classes/biom/*"],
       "@camera/*": ["classes/camera/*"],
       "@chunk/*": ["classes/chunk/*"],

@@ -1,4 +1,4 @@
-import type { World } from '@world/world';
+import type { World } from '@world/world.class';
 
 export type BiomTree = (world: World, x: number, y: number, lastCoords?: number) => number;
 

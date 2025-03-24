@@ -1,2 +1,2 @@
-export { Resource } from './resource';
+export { Resource } from './resource.class';
 export { Languages } from './types';

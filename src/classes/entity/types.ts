@@ -1,4 +1,4 @@
-import type { Camera } from '@camera/camera';
+import type { Camera } from '@camera/camera.class';
 import type { SpriteBorders, SpriteCrop } from '@sprite/types';
 import type { Coords } from '@global-types';
 

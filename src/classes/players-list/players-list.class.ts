@@ -1,6 +1,6 @@
-import type { Player } from '@player/player';
-import type { Camera } from '@camera/camera';
-import type { World } from '@world/world';
+import type { Player } from '@player/player.class';
+import type { Camera } from '@camera/camera.class';
+import type { World } from '@world/world.class';
 
 export class PlayersList {
     private players: Player[] = [];

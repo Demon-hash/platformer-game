@@ -1,9 +1,9 @@
-import type { Camera } from '@camera/camera';
-import { Entity } from '@entity/entity';
+import type { Camera } from '@camera/camera.class';
+import { Entity } from '@entity/entity.class';
 import { Vec2 } from '@math/vec2';
 import { Borders } from '@math/borders';
 import { crop } from '@sprite/crop';
-import { TILE_SIZE } from '@tile/tile';
+import { TILE_SIZE } from '@tile/tile.class';
 
 import sprite from '@sprites/hero.png';
 

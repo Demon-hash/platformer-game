@@ -1,5 +1,5 @@
 import type { BiomData, BiomInstance, BiomTree } from '@biom/types';
-import type { World } from '@world/world';
+import type { World } from '@world/world.class';
 import { TileEnum } from '@resources/tile.enum';
 
 export class BeachBiom implements BiomInstance {

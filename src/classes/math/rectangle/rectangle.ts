@@ -19,4 +19,8 @@ export class Rectangle {
             this.down <= rectangle.down
         );
     }
+
+    pointInRectangle(x: number, y: number) {
+        return x >= this.left && x < this.right && y >= this.top && y < this.down;
+    }
 }
