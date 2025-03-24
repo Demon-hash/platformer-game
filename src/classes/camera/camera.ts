@@ -2,6 +2,8 @@ export const CAMERA_WIDTH = 1024;
 export const CAMERA_HEIGHT = 768;
 
 export class Camera {
+    private static _instance?: Camera;
+
     public readonly w = CAMERA_WIDTH;
     public readonly h = CAMERA_HEIGHT;
 
@@ -13,6 +15,12 @@ export class Camera {
     public y = 0;
 
     constructor() {
+        if (Camera._instance) {
+            return Camera._instance;
+        }
+
+        Camera._instance = this;
+
         this.bw = this.x + Math.floor(this.w / 2);
         this.bh = this.y + Math.floor(this.h / 2);
     }

@@ -1,15 +1,15 @@
-import { KeyboardConfig } from '../../config/keyboard';
-import { Sprite, SpriteBorders } from '../sprite';
-import { World } from '../world';
-import { Coords } from '../../types';
-import { LifeCycle } from './life-cycle';
-import { Camera } from '../camera';
-import { Tile, TILE_SIZE } from '../tile';
-import { EntityInstance } from './types';
-import { Vec2 } from '../math';
+import type { World } from '@world/world';
+import type { SpriteBorders } from '@sprite/types';
+import type { EntityInstance, EntityLifeCycle } from '@entity/types';
+import type { Camera } from '@camera/camera';
+import type { Coords } from '@global-types';
+import { Vec2 } from '@math/vec2';
+import { Sprite } from '@sprite/sprite';
+import { Tile, TILE_SIZE } from '@tile/tile';
+import { KEYBOARD_CONFIG } from '@config/keyboard';
 
-export class Entity implements LifeCycle {
-    private readonly tile = new Tile();
+export class Entity implements EntityLifeCycle {
+    private readonly _tile = new Tile();
 
     protected world: World;
     protected sprite: Sprite;
@@ -38,15 +38,15 @@ export class Entity implements LifeCycle {
         });
     }
 
-    protected useKeyboard() {
+    protected usesKeyboard() {
         window.addEventListener(
             'keypress',
             (event: KeyboardEvent) => {
                 switch (event.key) {
-                    case KeyboardConfig.right:
+                    case KEYBOARD_CONFIG.right:
                         this.velocity.x = this.speed;
                         break;
-                    case KeyboardConfig.left:
+                    case KEYBOARD_CONFIG.left:
                         this.velocity.x = -this.speed;
                         break;
                     case ' ':
@@ -62,8 +62,8 @@ export class Entity implements LifeCycle {
             'keyup',
             (event: KeyboardEvent) => {
                 switch (event.key) {
-                    case KeyboardConfig.right:
-                    case KeyboardConfig.left:
+                    case KEYBOARD_CONFIG.right:
+                    case KEYBOARD_CONFIG.left:
                         this.velocity.x = 0;
                         break;
                 }
@@ -95,8 +95,8 @@ export class Entity implements LifeCycle {
 
         for (let i = 0; i < rectangle.horizontal.iterations; i++) {
             if (
-                this.tile.get(this.world.getTileId(rectangle.horizontal.x, rectangle.horizontal.y + i), 'solid') ||
-                this.tile.get(this.world.getTileId(rectangle.horizontal.w, rectangle.horizontal.y + i), 'solid')
+                this._tile.get(this.world.getTileId(rectangle.horizontal.x, rectangle.horizontal.y + i), 'solid') ||
+                this._tile.get(this.world.getTileId(rectangle.horizontal.w, rectangle.horizontal.y + i), 'solid')
             ) {
                 this.velocity.x = 0;
             }
@@ -104,10 +104,10 @@ export class Entity implements LifeCycle {
 
         for (let i = 0; i < rectangle.vertical.iterations; i++) {
             if (
-                this.tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.y), 'solid') ||
-                this.tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.h), 'solid') ||
-                this.tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.y), 'solid') ||
-                this.tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.h), 'solid')
+                this._tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.y), 'solid') ||
+                this._tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.h), 'solid') ||
+                this._tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.y), 'solid') ||
+                this._tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.h), 'solid')
             ) {
                 switch (Math.sign(this.velocity.y)) {
                     case -1:

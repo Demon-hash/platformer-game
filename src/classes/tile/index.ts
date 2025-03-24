@@ -1,2 +1,2 @@
 export { Tile, TILE_SIZE } from './tile';
-export { TileData } from './types';
+export type { TileData } from './types';

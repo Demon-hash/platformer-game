@@ -4,7 +4,7 @@ export const enum ChunkType {
     BEACH = 'BEACH',
 }
 
-export interface ChunkData {
+export type ChunkData = {
     generated: boolean;
     type: ChunkType;
 }

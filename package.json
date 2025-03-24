@@ -21,6 +21,7 @@
     "prettier": "^2.8.8",
     "style-loader": "^3.3.2",
     "ts-loader": "^9.4.2",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.0.4",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.3"

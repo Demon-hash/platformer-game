@@ -1,21 +1,27 @@
-import { ChunkType } from '../chunk/types';
-import { BiomData, BiomTree } from './types';
+import type { BiomData } from './types';
+import { ChunkType } from '@chunk/types';
+import { BeachBiom } from '@biom/types/beach.biom';
+import { MeadowBiom } from '@biom/types/meadow.biom';
+import { UnknownBiom } from '@biom/types/unknown.biom';
 
 export class Biom {
-    normalizeRawTreeData(log: number, leaves: number): BiomTree {
-        return { log, leaves };
-    }
+    private static _instance?: Biom;
 
-    normalizeRawData(cover: number, dirt: number, stone: number, tree: BiomTree[]): BiomData {
-        return { cover, dirt, stone, tree };
+    private readonly _data: Record<ChunkType, BiomData> = {
+        [ChunkType.UNINITIALIZED]: new UnknownBiom().data(),
+        [ChunkType.MEADOW]: new MeadowBiom().data(),
+        [ChunkType.BEACH]: new BeachBiom().data(),
+    };
+
+    constructor() {
+        if (Biom._instance) {
+            return Biom._instance;
+        }
+
+        Biom._instance = this;
     }
 
     data(type: ChunkType): BiomData {
-        switch (type) {
-            case ChunkType.BEACH:
-                return this.normalizeRawData(6, 6, 6, [this.normalizeRawTreeData(9, 10)]);
-            default:
-                return this.normalizeRawData(1, 2, 3, [this.normalizeRawTreeData(4, 5)]);
-        }
+        return this._data?.[type] ?? this._data[ChunkType.UNINITIALIZED];
     }
 }

@@ -1,20 +1,20 @@
-import { Coords } from '../../types';
+import type { Coords } from '@global-types';
 
-export interface SpriteInstance {
+export type SpriteInstance = {
     src: string;
     x: number;
     y: number;
     crop?: SpriteCrop;
     w?: number;
     h?: number;
-}
+};
 
-export interface SpriteCrop {
+export type SpriteCrop = {
     offset: Coords;
     size: SpriteBorders;
-}
+};
 
-export interface SpriteBorders {
+export type SpriteBorders = {
     width: number;
     height: number;
-}
+};

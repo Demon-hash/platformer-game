@@ -1,4 +1,4 @@
-export const KeyboardConfig = {
+export const KEYBOARD_CONFIG = {
     left: 'a',
     right: 'd',
     up: 'w',

@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ThreadEvent } from './types';
+import { BehaviorSubject, type Observable } from 'rxjs';
+import type { ThreadEvent } from './types';
 
 export class Thread {
     private readonly thread: Worker;

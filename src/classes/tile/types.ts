@@ -1,8 +1,9 @@
-import { Sprite } from '../sprite';
+import type { Sprite } from '../sprite';
 
-export interface TileData {
+export type TileData = {
     id: number;
     name: string;
     sprite: Sprite;
     solid: boolean;
-}
+    vegetation: boolean;
+};

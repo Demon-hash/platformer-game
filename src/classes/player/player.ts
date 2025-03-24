@@ -1,10 +1,11 @@
-import { crop } from '../sprite';
-import { TILE_SIZE } from '../tile';
-import { Entity } from '../entity';
-import { Camera } from '../camera';
-import { Borders, Vec2 } from '../math';
+import type { Camera } from '@camera/camera';
+import { Entity } from '@entity/entity';
+import { Vec2 } from '@math/vec2';
+import { Borders } from '@math/borders';
+import { crop } from '@sprite/crop';
+import { TILE_SIZE } from '@tile/tile';
 
-import sprite from '../../assets/sprites/hero.png';
+import sprite from '@sprites/hero.png';
 
 export class Player extends Entity {
     public id: number;
@@ -23,7 +24,7 @@ export class Player extends Entity {
             },
         });
 
-        this.useKeyboard();
+        this.usesKeyboard();
 
         setInterval(() => {
             this.frame = (this.frame + 1) % 8;

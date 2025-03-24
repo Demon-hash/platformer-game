@@ -1,15 +1,68 @@
-import { crop, Sprite, SpriteCrop } from '../sprite';
-import { TILE_SIZE, TileData } from '../tile';
+import type { TileData } from '@tile/types';
+import type { SpriteCrop } from '@sprite/types';
+import { TILE_SIZE } from '@tile/tile';
+import { crop } from '@sprite/crop';
+import { Sprite } from '@sprite/sprite';
+import { TileEnum } from '@resources/tile.enum';
 
-import sprites from '../../assets/sprites/sheet.png';
-import water from '../../assets/sprites/water.png';
+import sprites from '@sprites/sheet.png';
+import water from '@sprites/water.png';
 
 export class Resource {
-    private toTileData(solid: boolean, name: string, crop: SpriteCrop, image = sprites) {
+    static _instance: null | Resource;
+
+    private readonly _tiles: TileData[] = [
+        this._tile(TileEnum.SKY, false, false, 'sky', crop(0, 0, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.COVER, true, false, 'cover', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.DIRT, true, false, 'dirt', crop(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.STONE, true, false, 'stone', crop(TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.MAHOGANY_LOG, false, true, 'mahogany', crop(0, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
+        this._tile(
+            TileEnum.MAHOGANY_LEAVES,
+            false,
+            true,
+            'mahogany_leaves',
+            crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        ),
+        this._tile(TileEnum.SAND, true, false, 'sand', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.SANDSTONE, true, false, 'sandstone', crop(TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.PALM_LOG, false, true, 'palm', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
+        this._tile(
+            TileEnum.PALM_LEAVES,
+            false,
+            true,
+            'palm_leaves',
+            crop(TILE_SIZE, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)
+        ),
+        this._tile(TileEnum.ORE, false, false, 'ore', crop(TILE_SIZE * 2, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.WATER, false, false, 'water', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), water),
+    ];
+
+    constructor() {
+        if (Resource._instance) {
+            return Resource._instance;
+        }
+
+        Resource._instance = this;
+    }
+
+    get tiles() {
+        return this._tiles;
+    }
+
+    private _tile(
+        id: TileEnum,
+        solid: boolean,
+        vegetation: boolean,
+        name: string,
+        crop: SpriteCrop,
+        image = sprites
+    ): TileData {
         return {
-            id: 0,
+            id,
             solid,
             name,
+            vegetation,
             sprite: new Sprite({
                 x: 0,
                 y: 0,
@@ -17,22 +70,5 @@ export class Resource {
                 crop,
             }),
         };
-    }
-
-    tiles(): TileData[] {
-        return [
-            this.toTileData(false, 'TILE.SKY', crop(0, 0, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.GRASS', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.DIRT', crop(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.STONE', crop(TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.MAHOGANY', crop(0, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.MAHOGANY_LEAVES', crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.SAND', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(true, 'TILE.SANDSTONE', crop(TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.PALM', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.PALM_LEAVES', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.UNKNOWN', crop(TILE_SIZE, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-            this.toTileData(false, 'TILE.WATER', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), water),
-        ];
     }
 }

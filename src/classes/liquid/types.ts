@@ -1,4 +1,4 @@
-import { TileData } from '../tile';
+import type { TileData } from '../tile';
 
 export const enum MessageType {
     INIT = 'INIT',

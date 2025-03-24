@@ -1,4 +1,4 @@
-import { SpriteCrop, SpriteInstance } from './types';
+import type { SpriteCrop, SpriteInstance } from '@sprite/types';
 
 export class Sprite {
     private readonly image: HTMLImageElement;

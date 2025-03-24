@@ -1,4 +1,4 @@
-import { LiquidArgs, LiquidDataInstance, MessageType } from './types';
+import { type LiquidArgs, type LiquidDataInstance, MessageType } from './types';
 
 let settings: LiquidArgs;
 
@@ -59,7 +59,8 @@ function setWaterByMass() {
     for (let id, x, y = 0; y < settings.height; y++) {
         for (x = 0; x < settings.width; x++) {
             id = getTileId(x, y);
-            if (getInstanceProperty(id, 'solid')) {
+
+            if (isCollidable(id)) {
                 continue;
             }
 
@@ -87,6 +88,10 @@ function getTileId(x: number, y: number) {
 
 function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
     return settings.instances[id][key];
+}
+
+function isCollidable(id: number): boolean {
+    return !!getInstanceProperty(id, 'solid') || !!getInstanceProperty(id, 'vegetation');
 }
 
 function setTileId(x: number, y: number, id: number) {
@@ -120,7 +125,7 @@ function getFlowAmount(total: number) {
 }
 
 function vertical(x: number, y: number, direction: number, remainMass: number) {
-    if (getInstanceProperty(getTileId(x, y + direction), 'solid')) {
+    if (isCollidable(getTileId(x, y + direction))) {
         return remainMass;
     }
 
@@ -143,7 +148,7 @@ function vertical(x: number, y: number, direction: number, remainMass: number) {
 }
 
 function horizontal(x: number, y: number, direction: number, remainMass: number) {
-    if (getInstanceProperty(getTileId(x + direction, y), 'solid')) {
+    if (isCollidable(getTileId(x + direction, y))) {
         return remainMass;
     }
 

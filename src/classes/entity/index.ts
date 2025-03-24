@@ -1,2 +1,2 @@
 export { Entity } from './entity';
-export { LifeCycle } from './life-cycle';
+export type { EntityMisc, EntityInstance, EntitySprite, EntityLifeCycle } from './types';

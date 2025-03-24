@@ -13,6 +13,30 @@
     "typeRoots": [
       "./node_modules/@types",
       "./src/types/global.d.ts"
-    ]
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "@global-types": ["types/index.ts"],
+      "@config/*": ["config/*"],
+      "@sprites/*": ["assets/sprites/*"],
+      "@i18n/*": ["assets/i18n/*"],
+      "@types/*": ["config/types/*"],
+      "@biom/*": ["classes/biom/*"],
+      "@camera/*": ["classes/camera/*"],
+      "@chunk/*": ["classes/chunk/*"],
+      "@entity/*": ["classes/entity/*"],
+      "@level/*": ["classes/level/*"],
+      "@liquid/*": ["classes/liquid/*"],
+      "@math/*": ["classes/math/*"],
+      "@player/*": ["classes/player/*"],
+      "@players-list/*": ["classes/players-list/*"],
+      "@resources/*": ["classes/resource/*"],
+      "@scene/*": ["classes/scene/*"],
+      "@screen/*": ["classes/screen/*"],
+      "@sprite/*": ["classes/sprite/*"],
+      "@thread/*": ["classes/thread/*"],
+      "@tile/*": ["classes/tile/*"],
+      "@world/*": ["classes/world/*"],
+    }
   }
 }

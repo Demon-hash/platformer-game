@@ -1,46 +1,54 @@
-import { CAMERA_HEIGHT, CAMERA_WIDTH } from '../camera';
-import { Scene } from '../scene';
+import type { Scene } from '@scene/scene';
+import { CAMERA_HEIGHT, CAMERA_WIDTH } from '@camera/camera';
 
 export const SCREEN_BACKGROUND_COLOR = 'rgb(145,175,173)';
 
 export class Screen {
-    public readonly ctx: CanvasRenderingContext2D;
-    public readonly canvas: HTMLCanvasElement;
+    private static _instance?: Screen;
 
-    private scene: Scene;
+    private readonly _ctx: CanvasRenderingContext2D;
+    private readonly _canvas: HTMLCanvasElement;
+
+    private _scene: Scene;
 
     constructor() {
-        this.canvas = document.getElementById('screen') as HTMLCanvasElement;
-        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        if (Screen._instance) {
+            return Screen._instance;
+        }
 
-        this.resize();
-        this.redraw();
+        Screen._instance = this;
+
+        this._canvas = document.getElementById('screen') as HTMLCanvasElement;
+        this._ctx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        this._resize();
+        this._redraw();
     }
 
-    private resize() {
-        this.canvas.width = CAMERA_WIDTH;
-        this.canvas.height = CAMERA_HEIGHT;
+    private _resize() {
+        this._canvas.width = CAMERA_WIDTH;
+        this._canvas.height = CAMERA_HEIGHT;
     }
 
-    private redraw() {
-        window.requestAnimationFrame(this.redraw.bind(this));
-        this.clear();
+    private _redraw() {
+        window.requestAnimationFrame(this._redraw.bind(this));
+        this._clear();
     }
 
-    private clear(color = SCREEN_BACKGROUND_COLOR) {
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    private _clear(color = SCREEN_BACKGROUND_COLOR) {
+        this._ctx.fillStyle = color;
+        this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
-        if (this.scene) {
-            this.scene.draw(this.ctx);
+        if (this._scene) {
+            this._scene.draw(this._ctx);
         }
     }
 
     setScene(scene: Scene) {
-        this.scene = scene;
+        this._scene = scene;
     }
 
     getScene(): Scene | undefined {
-        return this.scene;
+        return this._scene;
     }
 }

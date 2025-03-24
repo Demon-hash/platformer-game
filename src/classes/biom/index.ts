@@ -1,2 +1,2 @@
 export { Biom } from './biom';
-export { BiomData, BiomTree } from './types';
+export type { BiomData } from './types';

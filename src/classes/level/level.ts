@@ -1,25 +1,42 @@
-import { Scene } from '../scene';
-import { World } from '../world';
-import { Camera } from '../camera';
-import { PlayersList } from '../players-list';
+import type { Scene } from '@scene/scene';
+import type { Camera } from '@camera/camera';
+import type { World } from '@world/world';
+import type { PlayersList } from '@players-list/players-list';
 
 export class Level implements Scene {
-    private readonly camera: Camera;
-    private readonly world: World;
-    private readonly players: PlayersList;
+    private static _instance?: Level;
+
+    private readonly _camera: Camera;
+    private readonly _world: World;
+    private readonly _players: PlayersList;
 
     constructor(camera: Camera, world: World, players: PlayersList) {
-        this.camera = camera;
-        this.world = world;
-        this.players = players;
+        if (Level._instance) {
+            return Level._instance;
+        }
 
-        window.addEventListener('click', (event: MouseEvent) => {
-            this.world.addLiquid(event.x + this.camera.x, event.y + this.camera.y);
-        });
+        Level._instance = this;
+
+        this._camera = camera;
+        this._world = world;
+        this._players = players;
+
+        this._listenForMouseEvents();
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.world.draw(ctx, this.camera);
-        this.players.draw(this.camera, this.world, ctx);
+        this._world.draw(ctx, this._camera);
+        this._players.draw(this._camera, this._world, ctx);
     }
+
+    private _listenForMouseEvents() {
+        window.addEventListener('click', this._onLeftClick.bind(this));
+        window.addEventListener('contextmenu', this._onRightClick.bind(this));
+    }
+
+    private _onLeftClick(event: MouseEvent) {
+        this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
+    }
+
+    private _onRightClick(event: MouseEvent) {}
 }

@@ -1,22 +1,22 @@
-import { Tile, TILE_SIZE } from '../tile';
-import { Camera } from '../camera';
-import { Chunk } from '../chunk';
-import { Liquid, LIQUID_MAX_MASS } from '../liquid';
+import type { Camera } from '@camera/camera';
+import { Chunk } from '@chunk/chunk';
+import { Tile, TILE_SIZE } from '@tile/tile';
+import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid';
 
 export const WORLD_WIDTH = 2048;
 export const WORLD_HEIGHT = 2048;
 
 export class World {
-    private readonly chunk: Chunk;
+    private readonly _chunk: Chunk;
 
-    public readonly tile: Tile;
-    public readonly liquid: Liquid;
-    public readonly width: number;
-    public readonly height: number;
-    public readonly widthInBlocks: number;
-    public readonly heightInBlocks: number;
+    readonly tile: Tile;
+    readonly liquid: Liquid;
+    readonly width: number;
+    readonly height: number;
+    readonly widthInBlocks: number;
+    readonly heightInBlocks: number;
 
-    private tiles: Uint8Array;
+    private _tiles: Uint8Array;
 
     constructor() {
         this.tile = new Tile();
@@ -27,9 +27,10 @@ export class World {
         this.widthInBlocks = Math.floor(this.width / TILE_SIZE);
         this.heightInBlocks = Math.floor(this.height / TILE_SIZE);
 
-        this.tiles = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
+        this._tiles = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
+        this._chunk = new Chunk(this);
+
         this.liquid = new Liquid(this);
-        this.chunk = new Chunk(this);
     }
 
     getId(x: number, y: number) {
@@ -37,11 +38,11 @@ export class World {
     }
 
     setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
-        this.tiles[Math.floor(Math.floor(y / projection) * this.widthInBlocks + Math.floor(x / projection))] = id;
+        this._tiles[Math.floor(Math.floor(y / projection) * this.widthInBlocks + Math.floor(x / projection))] = id;
     }
 
     getTileId(x: number, y: number): number {
-        return this.tiles[this.getId(x, y)];
+        return this._tiles[this.getId(x, y)];
     }
 
     addLiquid(x: number, y: number, mass = LIQUID_MAX_MASS, projection = TILE_SIZE) {
@@ -49,11 +50,11 @@ export class World {
     }
 
     data() {
-        return this.tiles;
+        return this._tiles;
     }
 
     update(camera: Camera) {
-        this.chunk.generate(camera);
+        this._chunk.generate(camera);
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

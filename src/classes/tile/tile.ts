@@ -1,35 +1,40 @@
 import { Resource } from '../resource';
-import { Liquid, LIQUID_MAX_MASS } from '../liquid';
-import { TileData } from './types';
+import { type Liquid, LIQUID_MAX_MASS } from '../liquid';
+import type { TileData } from './types';
+import { TileEnum } from '@resources/tile.enum';
 
 export const TILE_SIZE = 16;
 
 export class Tile {
-    private readonly resources: TileData[] = [];
+    private static _instance?: Tile;
 
-    private resource: Resource;
+    private readonly _resource = new Resource();
+    private readonly _tiles = this._resource.tiles;
 
     constructor() {
-        this.resource = new Resource();
-        this.resources = this.resource.tiles();
+        if (Tile._instance) {
+            return Tile._instance;
+        }
+
+        Tile._instance = this;
     }
 
     data() {
-        return this.resources;
+        return this._tiles;
     }
 
     get(id: number, key: keyof TileData) {
-        return this.resources[id][key];
+        return this._tiles[id][key];
     }
 
     draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid) {
         switch (titleId) {
-            case 11:
+            case TileEnum.WATER:
                 const frame = Math.floor(Math.min(LIQUID_MAX_MASS / liquid.masses[id], LIQUID_MAX_MASS));
-                this.resources[titleId].sprite.draw(ctx, frame + 1);
+                this._tiles[titleId].sprite.draw(ctx, frame + 1);
                 break;
             default:
-                this.resources[titleId].sprite.draw(ctx);
+                this._tiles[titleId].sprite.draw(ctx);
                 break;
         }
     }

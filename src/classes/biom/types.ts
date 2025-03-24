@@ -1,11 +1,14 @@
-export interface BiomTree {
-    log: number;
-    leaves: number;
-}
+import type { World } from '@world/world';
 
-export interface BiomData {
+export type BiomTree = (world: World, x: number, y: number, lastCoords?: number) => number;
+
+export type BiomData = {
     cover: number;
     dirt: number;
     stone: number;
-    tree: BiomTree[];
+    trees: BiomTree[];
+};
+
+export interface BiomInstance {
+    data(): BiomData;
 }

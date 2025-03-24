@@ -1,4 +1,4 @@
-export interface ThreadEvent {
+export type ThreadEvent = {
     type: string;
     data?: unknown;
 }
