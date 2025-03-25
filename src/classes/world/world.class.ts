@@ -62,7 +62,7 @@ export class World {
     }
 
     update(camera: Camera) {
-        this._chunk.generate(camera);
+        void this._chunk.generate(camera);
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

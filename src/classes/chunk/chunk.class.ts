@@ -7,8 +7,8 @@ import type { World } from '@world/world.class';
 import type { Camera } from '@camera/camera.class';
 import { TileEnum } from '@resources/tile.enum';
 
-// ChunkType.MEADOW
-const ChunkTypes = [ChunkType.BEACH];
+// ChunkType.MEADOW, ChunkType.BEACH
+const ChunkTypes = [ChunkType.MEADOW];
 
 export const MIN_CHUNK_LENGTH = 256;
 
@@ -20,7 +20,6 @@ export class Chunk {
     private readonly _size: number;
     private readonly _world: World;
     private readonly _data: ChunkData[];
-    private readonly _frequency: number;
     private readonly _seed = new Date().valueOf();
     private readonly _biom: Biom;
 
@@ -40,9 +39,8 @@ export class Chunk {
         this._size = size;
         this._width = Math.ceil(this._world.widthInBlocks / this._size);
         this._height = Math.ceil(this._world.heightInBlocks / this._size);
-        this._frequency = Math.floor(this._width / 2);
-        this._gradation = this._size;
         this._lastTreeCoords = 0;
+        this._gradation = 312;
 
         this._data = new Array(this._width * this._height).fill(null).map(() => ({
             type: ChunkType.UNINITIALIZED,
@@ -50,7 +48,7 @@ export class Chunk {
         }));
     }
 
-    generate(camera: Camera) {
+    async generate(camera: Camera) {
         const centerX = (camera.x + camera.w) / 2;
         const centerY = (camera.y + camera.h) / 2;
         const chunkSize = this._size * TILE_SIZE;
@@ -70,24 +68,56 @@ export class Chunk {
     }
 
     private _coverLevel(x: number, y: number, level: number) {
-        if (level === 0) {
-            return;
-        }
-
-        if (level > 1) {
-            return this._fillDeep(x, y, TileEnum.STONE, TileEnum.STONE, y);
-        }
-
         const { cover, dirt, stone, trees } = this._biom.data(this._getType());
         const randomTreeIndex = Math.floor(Math.random() * trees.length);
 
-        for (let w = 0; w < this._size; w++) {
-            this._gradation += Math.floor(this._smooth(x + w, this._gradation)) * this._amplitude(-1, 1);
+        const gradations = Array.from({ length: this._size })
+            .fill(0)
+            .map((_, index) => {
+                if (index === 0) {
+                    return this._gradation;
+                }
 
-            this._lastTreeCoords = trees[randomTreeIndex](this._world, x + w, this._gradation, this._lastTreeCoords);
+                this._gradation += Math.floor(this._smooth(x + index, this._gradation)) * this._amplitude(-1, 1);
+                return this._gradation;
+            });
 
-            this._world.setTileId(x + w, this._gradation, cover, 1);
-            this._fillDeep(x + w, this._gradation + 1, dirt, stone, level);
+        for (let l, w = 0; w < this._size; w += 12) {
+            this._circle(x + w, gradations[w], 24, () => true, dirt);
+            this._circle(x + w, gradations[w], 24, (x, y) => this._world.getTileId(x, y - 1) === TileEnum.SKY, cover);
+
+            for (l = 0; l < this._size; l += 12) {
+                this._circle(x + w, gradations[w] + l + 48, 24, () => true, stone);
+            }
+        }
+
+        // this._lastTreeCoords = trees[randomTreeIndex](
+        //                         this._world,
+        //                         x,
+        //                         y - 20,
+        //                         this._lastTreeCoords,
+        //                         x + this._size - 32
+        //                     );
+    }
+
+    private _circle(
+        x: number,
+        y: number,
+        radius: number,
+        comporator: (x: number, y: number) => boolean,
+        material: number,
+        onSet?: (x: number, y: number) => void
+    ) {
+        for (let w, h = 0; h < radius * 2; h++) {
+            for (w = 0; w < radius * 2; w++) {
+                const dx = radius - w;
+                const dy = radius - h;
+
+                if (Math.pow(dx, 2) + Math.pow(dy, 2) <= Math.pow(radius, 2) && comporator(x + dx, y + dy)) {
+                    this._world.setTileId(x + dx, y + dy, material, 1);
+                    onSet?.(x + dx, y + dy);
+                }
+            }
         }
     }
 
@@ -101,19 +131,9 @@ export class Chunk {
 
     private _smooth(x: number, y: number): number {
         const noise2D = createNoise2D(Alea(this._seed));
-        return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / this._frequency;
-    }
+        const frequency = Math.floor(this._width / 2);
 
-    private _fillDeep(x: number, y: number, dirt: number, stone: number, level = 0) {
-        if (level === 1) {
-            for (let z = 16, i = 0; i < this._size; i++) {
-                this._world.setTileId(x, y + i, i >= z ? stone : dirt, 1);
-            }
-        } else {
-            for (let i = 0; i < this._size; i++) {
-                this._world.setTileId(x, y + i, stone, 1);
-            }
-        }
+        return (noise2D(x - 1, y) + noise2D(x, y) + noise2D(x + 1, y)) / frequency;
     }
 
     private _getChunkId(x: number, y: number) {

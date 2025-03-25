@@ -30,7 +30,7 @@ export class Liquid {
         this._thread.send({
             type: MessageType.INIT,
             data: {
-                minMass: 1,
+                minMass: 0.01,
                 maxMass: LIQUID_MAX_MASS,
                 compression: 0.02,
                 speed: 15,

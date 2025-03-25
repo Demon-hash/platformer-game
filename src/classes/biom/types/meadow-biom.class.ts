@@ -22,8 +22,16 @@ export class MeadowBiom implements BiomInstance {
         };
     }
 
-    private _mahagony: BiomTree = function (world: World, x: number, y: number, lastCoords = 0): number {
-        if (x < lastCoords) {
+    private _mahagony: BiomTree = function (
+        world: World,
+        x: number,
+        y: number,
+        lastCoords = 0,
+        limitEnd = Infinity
+    ): number {
+        console.log(x < lastCoords, x > limitEnd);
+
+        if (x < lastCoords || x > limitEnd) {
             return lastCoords;
         }
 

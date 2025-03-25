@@ -32,7 +32,7 @@ function simulate() {
     const normalizedX = Math.floor(cameraX / 16);
     const normalizedY = Math.floor(cameraY / 16);
 
-    settings.light_s[getId(normalizedX + 32, 230)] = 150;
+    settings.light_s[getId(normalizedX + 32, 250)] = 150;
 
     const startX = Math.max(0, normalizedX - rangeX);
     const startY = Math.max(0, normalizedY - rangeY);
