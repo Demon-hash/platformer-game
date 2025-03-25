@@ -27,14 +27,16 @@ export class Tile {
         return this._tiles[id][key];
     }
 
-    draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid) {
+    draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid, opacity: number) {
+        const args = [undefined, undefined, undefined, undefined, opacity];
+
         switch (titleId) {
             case TileEnum.WATER:
                 const frame = Math.floor(Math.min(LIQUID_MAX_MASS / liquid.masses[id], LIQUID_MAX_MASS));
-                this._tiles[titleId].sprite.draw(ctx, frame + 1);
+                this._tiles[titleId].sprite.draw(ctx, frame + 1, ...args);
                 break;
             default:
-                this._tiles[titleId].sprite.draw(ctx);
+                this._tiles[titleId].sprite.draw(ctx, undefined, ...args);
                 break;
         }
     }

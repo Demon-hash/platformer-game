@@ -48,11 +48,7 @@ function simulate() {
 }
 
 function copyMasses() {
-    for (let x, y = 0; y < settings.height; y++) {
-        for (x = 0; x < settings.width; x++) {
-            settings.masses[getId(x, y)] = settings.updated[getId(x, y)];
-        }
-    }
+    settings.masses.set(settings.updated);
 }
 
 function setWaterByMass() {

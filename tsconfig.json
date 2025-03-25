@@ -22,6 +22,7 @@
       "@sprites/*": ["assets/sprites/*"],
       "@cursor/*": ["classes/cursor/*"],
       "@inventory/*": ["classes/inventory/*"],
+      "@light/*": ["classes/light/*"],
       "@i18n/*": ["assets/i18n/*"],
       "@biom/*": ["classes/biom/*"],
       "@camera/*": ["classes/camera/*"],

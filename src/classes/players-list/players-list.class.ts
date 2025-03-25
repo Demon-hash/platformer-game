@@ -28,6 +28,8 @@ export class PlayersList {
                     camera.update(player.coords.x, player.coords.y, world.width, world.height);
                     player.update();
                     player.draw(ctx, camera);
+                    world.createLightSource(player.coords.x, 2500, 200);
+
                     break;
                 default:
                     if (

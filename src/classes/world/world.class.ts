@@ -2,8 +2,9 @@ import type { Camera } from '@camera/camera.class';
 import { Chunk } from '@chunk/chunk.class';
 import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
+import { Light } from '@light/light.class';
 
-export const WORLD_WIDTH = 2048;
+export const WORLD_WIDTH = 1024;
 export const WORLD_HEIGHT = 2048;
 
 export class World {
@@ -11,6 +12,8 @@ export class World {
 
     readonly tile: Tile;
     readonly liquid: Liquid;
+    readonly light: Light;
+
     readonly width: number;
     readonly height: number;
     readonly widthInBlocks: number;
@@ -31,6 +34,7 @@ export class World {
         this._chunk = new Chunk(this);
 
         this.liquid = new Liquid(this);
+        this.light = new Light(this);
     }
 
     getId(x: number, y: number) {
@@ -47,6 +51,10 @@ export class World {
 
     addLiquid(x: number, y: number, mass = LIQUID_MAX_MASS, projection = TILE_SIZE) {
         this.liquid.addMass(Math.floor(x / projection), Math.floor(y / projection), mass);
+    }
+
+    createLightSource(x: number, y: number, range = 25, projection = TILE_SIZE) {
+        this.light.addSource(Math.floor(x / projection), Math.floor(y / projection), range);
     }
 
     data() {
@@ -67,7 +75,13 @@ export class World {
             for (x = viewXBegin; x < viewXEnd; x++) {
                 ctx.save();
                 ctx.translate(Math.floor(x * TILE_SIZE - camera.x), Math.floor(y * TILE_SIZE - camera.y));
-                this.tile.draw(this.getTileId(x, y), ctx, this.getId(x, y), this.liquid);
+                this.tile.draw(
+                    this.getTileId(x, y),
+                    ctx,
+                    this.getId(x, y),
+                    this.liquid,
+                    this.light.getLightSource(x, y)
+                );
                 ctx.restore();
             }
         }

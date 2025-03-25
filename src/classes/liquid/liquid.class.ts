@@ -29,7 +29,7 @@ export class Liquid {
                 minMass: 1,
                 maxMass: LIQUID_MAX_MASS,
                 compression: 0.02,
-                speed: 5,
+                speed: 15,
                 minFlow: 1,
                 width: world.widthInBlocks,
                 height: world.heightInBlocks,
