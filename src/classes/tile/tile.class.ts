@@ -28,7 +28,7 @@ export class Tile {
     }
 
     draw(titleId: number, ctx: CanvasRenderingContext2D, id: number, liquid: Liquid, opacity: number) {
-        const args = [undefined, undefined, undefined, undefined, opacity];
+        const args = [undefined, undefined, undefined, undefined, opacity] as const;
 
         switch (titleId) {
             case TileEnum.WATER:

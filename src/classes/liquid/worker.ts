@@ -12,7 +12,7 @@ self.onmessage = ({
     switch (type as MessageType) {
         case MessageType.INIT:
             settings = data;
-            setInterval(() => simulate(), 1);
+            setInterval(() => simulate(), 3.5);
             break;
         case MessageType.ADD:
             settings.updated[getId(x, y)] = mass;
@@ -22,38 +22,32 @@ self.onmessage = ({
     }
 };
 
-function update() {
-    for (let x, y = 0; y < settings.height; y++) {
-        for (x = 0; x < settings.width; x++) {
-            if (settings.masses[getId(x, y)] <= 0) continue;
-
-            let remainingMass = getMassValue(x, y);
-            if (remainingMass <= 0) continue;
-
-            remainingMass = vertical(x, y, 1, remainingMass);
-            if (remainingMass <= 0) continue;
-
-            remainingMass = horizontal(x, y, -1, remainingMass);
-            if (remainingMass <= 0) continue;
-
-            remainingMass = horizontal(x, y, 1, remainingMass);
-        }
-    }
-}
-
 function simulate() {
-    update();
+    const [cameraX, cameraY] = settings.coords;
+
+    const rangeX = 96;
+    const rangeY = 64;
+
+    const normalizedX = Math.floor(cameraX / 16);
+    const normalizedY = Math.floor(cameraY / 16);
+
+    const startX = Math.max(0, normalizedX - rangeX);
+    const startY = Math.max(0, normalizedY - rangeY);
+    const endX = Math.min(normalizedX + rangeX, settings.width);
+    const endY = Math.min(normalizedY + rangeY, settings.height);
+
+    update(startX, startY, endX, endY);
     copyMasses();
-    setWaterByMass();
+    setWaterByMass(startX, startY, endX, endY);
 }
 
 function copyMasses() {
     settings.masses.set(settings.updated);
 }
 
-function setWaterByMass() {
-    for (let id, x, y = 0; y < settings.height; y++) {
-        for (x = 0; x < settings.width; x++) {
+function setWaterByMass(startX: number, startY: number, endX: number, endY: number) {
+    for (let id, x, y = startY; y < endY; y++) {
+        for (x = startX; x < endX; x++) {
             id = getTileId(x, y);
 
             if (isCollidable(id)) {
@@ -70,6 +64,25 @@ function setWaterByMass() {
     }
 }
 
+function update(startX: number, startY: number, endX: number, endY: number) {
+    for (let x, y = startY; y < endY; y++) {
+        for (x = startX; x < endX; x++) {
+            if (settings.masses[getId(x, y)] <= 0) continue;
+
+            let remainingMass = getMassValue(x, y);
+            if (remainingMass <= 0) continue;
+
+            remainingMass = vertical(x, y, 1, remainingMass);
+            if (remainingMass <= 0) continue;
+
+            remainingMass = horizontal(x, y, -1, remainingMass);
+            if (remainingMass <= 0) continue;
+
+            remainingMass = horizontal(x, y, 1, remainingMass);
+        }
+    }
+}
+
 function clamp(num: number, min: number, max: number) {
     return Math.min(Math.max(num, min), max);
 }
@@ -79,6 +92,10 @@ function getId(x: number, y: number): number {
 }
 
 function getTileId(x: number, y: number) {
+    if (x < 0 || x >= settings.width || y < 0 || y >= settings.height) {
+        return 0;
+    }
+
     return settings.tiles[getId(x, y)];
 }
 

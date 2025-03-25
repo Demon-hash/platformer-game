@@ -4,8 +4,8 @@ import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
 import { Light } from '@light/light.class';
 
-export const WORLD_WIDTH = 1024;
-export const WORLD_HEIGHT = 2048;
+export const WORLD_WIDTH = 8400;
+export const WORLD_HEIGHT = 2400;
 
 export class World {
     private readonly _chunk: Chunk;

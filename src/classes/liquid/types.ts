@@ -5,7 +5,7 @@ export const enum MessageType {
     ADD = 'ADD',
 }
 
-export type LiquidDataInstance = Exclude<TileData, 'sprite'>;
+export type LiquidDataInstance = Omit<TileData, 'sprite'>;
 
 export interface LiquidArgs {
     minMass: number;
@@ -18,5 +18,6 @@ export interface LiquidArgs {
     masses: Float32Array;
     updated: Float32Array;
     tiles: Uint8Array;
+    coords: Uint32Array;
     instances: LiquidDataInstance[];
 }

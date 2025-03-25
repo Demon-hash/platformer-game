@@ -1,4 +1,4 @@
-import { MessageType } from '@liquid/types';
+import { type LiquidDataInstance, MessageType } from '@liquid/types';
 import type { LightArgs } from './types';
 
 let settings: LightArgs;
@@ -13,7 +13,7 @@ self.onmessage = ({
     switch (type as MessageType) {
         case MessageType.INIT:
             settings = data;
-            setInterval(() => simulate(), 20);
+            setInterval(() => simulate(), 1);
             break;
         case MessageType.ADD:
             settings.light_s[getId(x, y)] = range;
@@ -24,15 +24,39 @@ self.onmessage = ({
 };
 
 function simulate() {
+    const [cameraX, cameraY] = settings.coords;
+
+    const rangeX = 96;
+    const rangeY = 64;
+
+    const normalizedX = Math.floor(cameraX / 16);
+    const normalizedY = Math.floor(cameraY / 16);
+
+    settings.light_s[getId(normalizedX + 32, normalizedY)] = 125;
+
+    const startX = Math.max(0, normalizedX - rangeX);
+    const startY = Math.max(0, normalizedY - rangeY);
+    const endX = Math.min(normalizedX + rangeX, settings.width);
+    const endY = Math.min(normalizedY + rangeY, settings.height);
+
     settings.light_h.fill(0);
 
     const coof = [0, 0, 0, 0];
 
-    for (let h = 0; h < settings.height; h++) {
-        for (let w = 0; w < settings.width; w++) {
+    for (let w, h = 0; h < endY; h++) {
+        for (w = startX; w < endX; w++) {
+            if (w < 0 || w > settings.width || h < 0 || h > settings.height) {
+                continue;
+            }
+
             const delta = settings.light_s[getId(w, h)];
 
             if (delta <= 0) continue;
+
+            // coof[0] = Number(getInstanceProperty(getId(w - 1, h), 'solid')) * 8 + 1;
+            // coof[1] = Number(getInstanceProperty(getId(w + 1, h), 'solid')) * 8 + 1;
+            // coof[2] = Number(getInstanceProperty(getId(w, h - 1), 'solid')) * 8 + 1;
+            // coof[3] = Number(getInstanceProperty(getId(w, h + 1), 'solid')) * 8 + 1;
 
             coof[0] = Number(!!settings.tiles[getId(w - 1, h)]) * 8 + 1;
             coof[1] = Number(!!settings.tiles[getId(w + 1, h)]) * 8 + 1;
@@ -62,4 +86,12 @@ function simulate() {
 
 function getId(x: number, y: number): number {
     return Math.floor(y * settings.width + x);
+}
+
+function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
+    if (id < 0 || id >= settings.instances.length) {
+        return undefined;
+    }
+
+    return settings.instances?.[id]?.[key];
 }

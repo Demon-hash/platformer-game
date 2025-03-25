@@ -1,7 +1,7 @@
 import { Camera, Player, PlayersList, Screen, World, Level } from './classes';
 
-const world = new World();
 const camera = new Camera();
+const world = new World();
 const list = new PlayersList();
 const player = new Player();
 const screen = new Screen();

@@ -1,6 +1,7 @@
 import type { World } from '@world/world.class';
 import { Thread } from '@thread/thread.class';
-import { MessageType } from '@liquid/types';
+import { type LiquidArgs, MessageType } from '@liquid/types';
+import { Camera } from '@camera/camera.class';
 
 export const LIQUID_MAX_MASS = 8;
 
@@ -10,6 +11,7 @@ export class Liquid {
     private static _instance?: Liquid;
 
     private readonly _thread: Thread;
+    private readonly _camera: Camera;
 
     masses: Float32Array;
 
@@ -21,6 +23,8 @@ export class Liquid {
         Liquid._instance = this;
 
         this._thread = new Thread(new Worker(new URL('./worker.ts', import.meta.url)));
+        this._camera = new Camera();
+
         this.masses = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
 
         this._thread.send({
@@ -36,8 +40,9 @@ export class Liquid {
                 masses: this.masses,
                 updated: new Float32Array(world.widthInBlocks * world.heightInBlocks),
                 tiles: world.data(),
+                coords: this._camera.coords,
                 instances: world.tile.data().map(({ sprite, ...rest }) => rest),
-            },
+            } satisfies LiquidArgs,
         });
     }
 
