@@ -7,7 +7,8 @@ import type { World } from '@world/world.class';
 import type { Camera } from '@camera/camera.class';
 import { TileEnum } from '@resources/tile.enum';
 
-const ChunkTypes = [ChunkType.MEADOW, ChunkType.BEACH];
+// ChunkType.MEADOW
+const ChunkTypes = [ChunkType.BEACH];
 
 export const MIN_CHUNK_LENGTH = 256;
 

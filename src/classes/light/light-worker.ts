@@ -32,7 +32,7 @@ function simulate() {
     const normalizedX = Math.floor(cameraX / 16);
     const normalizedY = Math.floor(cameraY / 16);
 
-    settings.light_s[getId(normalizedX + 32, normalizedY)] = 125;
+    settings.light_s[getId(normalizedX + 32, 230)] = 150;
 
     const startX = Math.max(0, normalizedX - rangeX);
     const startY = Math.max(0, normalizedY - rangeY);
@@ -43,7 +43,7 @@ function simulate() {
 
     const coof = [0, 0, 0, 0];
 
-    for (let w, h = 0; h < endY; h++) {
+    for (let w, h = startY; h < endY; h++) {
         for (w = startX; w < endX; w++) {
             if (w < 0 || w > settings.width || h < 0 || h > settings.height) {
                 continue;
@@ -53,10 +53,10 @@ function simulate() {
 
             if (delta <= 0) continue;
 
-            // coof[0] = Number(getInstanceProperty(getId(w - 1, h), 'solid')) * 8 + 1;
-            // coof[1] = Number(getInstanceProperty(getId(w + 1, h), 'solid')) * 8 + 1;
-            // coof[2] = Number(getInstanceProperty(getId(w, h - 1), 'solid')) * 8 + 1;
-            // coof[3] = Number(getInstanceProperty(getId(w, h + 1), 'solid')) * 8 + 1;
+            // coof[0] = Number(!getInstanceProperty(getId(w - 1, h), 'solid')) * 8 + 1;
+            // coof[1] = Number(!getInstanceProperty(getId(w + 1, h), 'solid')) * 8 + 1;
+            // coof[2] = Number(!getInstanceProperty(getId(w, h - 1), 'solid')) * 8 + 1;
+            // coof[3] = Number(!getInstanceProperty(getId(w, h + 1), 'solid')) * 8 + 1;
 
             coof[0] = Number(!!settings.tiles[getId(w - 1, h)]) * 8 + 1;
             coof[1] = Number(!!settings.tiles[getId(w + 1, h)]) * 8 + 1;

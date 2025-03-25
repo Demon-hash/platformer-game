@@ -32,18 +32,10 @@ export class Sprite {
         };
     }
 
-    getColorStr(r1: number, g1: number, b1: number, r2: number, g2: number, b2: number, pct: number) {
-        const rn = Math.round((1 - pct) * r1 + pct * r2),
-            gn = Math.round((1 - pct) * g1 + pct * g2),
-            bn = Math.round((1 - pct) * b1 + pct * b2);
-        return 'rgb(' + rn + ',' + gn + ',' + bn + ')';
-    }
-
     draw(ctx: CanvasRenderingContext2D, frame = 1, x?: number, y?: number, w?: number, h?: number, opacity?: number) {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-
-        if (!this.image || !this.cropBox) return;
+        if (!this.image || !this.cropBox) {
+            return;
+        }
 
         ctx.globalAlpha = opacity ?? 1;
         ctx.drawImage(

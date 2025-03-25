@@ -3,7 +3,8 @@ import { Camera, CAMERA_HEIGHT, CAMERA_WIDTH } from '@camera/camera.class';
 import { Inventory } from '@inventory/inventory.class';
 import { Cursor } from '@cursor/cursor.class';
 
-export const SCREEN_BACKGROUND_COLOR = 'rgb(145,175,173)';
+// export const SCREEN_BACKGROUND_COLOR = 'rgb(120,191,236)';
+export const SCREEN_BACKGROUND_COLOR = '#000';
 
 export class Screen {
     private static _instance?: Screen;
