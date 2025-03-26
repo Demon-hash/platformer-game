@@ -28,6 +28,7 @@ export class Chunk {
                 height: Math.ceil(world.heightInBlocks / size),
                 coords: this._cameraCoords,
                 tiles: world.data(),
+                backgrounds: world.backgrounds(),
                 widthInBlocks: world.widthInBlocks,
             } satisfies ChunkArgs,
         });

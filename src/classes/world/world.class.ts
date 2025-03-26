@@ -3,6 +3,7 @@ import { Chunk } from '@chunk/chunk.class';
 import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
 import { Light } from '@light/light.class';
+import { TileEnum } from '@resources/tile.enum';
 
 export const WORLD_WIDTH = 8400;
 export const WORLD_HEIGHT = 2400;
@@ -19,7 +20,8 @@ export class World {
     readonly widthInBlocks: number;
     readonly heightInBlocks: number;
 
-    private _tiles: Uint8Array;
+    private readonly _tiles: Uint8Array;
+    private readonly _backgrounds: Uint8Array;
 
     constructor() {
         this.tile = new Tile();
@@ -31,6 +33,8 @@ export class World {
         this.heightInBlocks = Math.floor(this.height / TILE_SIZE);
 
         this._tiles = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
+        this._backgrounds = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
+
         this._chunk = new Chunk(this);
 
         this.liquid = new Liquid(this);
@@ -43,6 +47,15 @@ export class World {
 
     setTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
         this._tiles[Math.floor(Math.floor(y / projection) * this.widthInBlocks + Math.floor(x / projection))] = id;
+    }
+
+    setBackgroundTileId(x: number, y: number, id: number, projection = TILE_SIZE) {
+        this._backgrounds[Math.floor(Math.floor(y / projection) * this.widthInBlocks + Math.floor(x / projection))] =
+            id;
+    }
+
+    getBackgroundTileId(x: number, y: number): number {
+        return this._backgrounds[this.getId(x, y)];
     }
 
     getTileId(x: number, y: number): number {
@@ -61,6 +74,10 @@ export class World {
         return this._tiles;
     }
 
+    backgrounds() {
+        return this._backgrounds;
+    }
+
     update(camera: Camera) {
         void this._chunk.generate(camera);
     }
@@ -77,6 +94,7 @@ export class World {
                 ctx.translate(Math.floor(x * TILE_SIZE - camera.x), Math.floor(y * TILE_SIZE - camera.y));
                 this.tile.draw(
                     this.getTileId(x, y),
+                    this.getBackgroundTileId(x, y),
                     ctx,
                     this.getId(x, y),
                     this.liquid,

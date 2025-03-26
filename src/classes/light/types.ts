@@ -8,6 +8,7 @@ export interface LightArgs {
     light_h: Uint8Array;
     light_s: Uint8Array;
     tiles: Uint8Array;
+    backgrounds: Uint8Array;
     coords: Uint32Array;
     instances: LightDataInstance[];
 }

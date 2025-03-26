@@ -30,13 +30,19 @@ export class Level implements Scene {
     }
 
     private _listenForMouseEvents() {
-        window.addEventListener('click', this._onLeftClick.bind(this));
+        window.addEventListener('mouseup', this._onLeftClick.bind(this));
         window.addEventListener('contextmenu', this._onRightClick.bind(this));
     }
 
     private _onLeftClick(event: MouseEvent) {
-        this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
+        this._world.setTileId(event.x + this._camera.x, event.y + this._camera.y, 2);
+        // this._world.setBackgroundTileId(event.x + this._camera.x, event.y + this._camera.y, 2);
+
+        // this._world.createLightSource(event.x + this._camera.x, event.y + this._camera.y, 75);
+        // this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
     }
 
-    private _onRightClick(event: MouseEvent) {}
+    private _onRightClick(event: MouseEvent) {
+        this._world.setTileId(event.x + this._camera.x, event.y + this._camera.y, 0);
+    }
 }

@@ -37,6 +37,7 @@ export class Light {
                 light_h: this.light_h,
                 light_s: this.light_s,
                 tiles: world.data(),
+                backgrounds: world.backgrounds(),
                 coords: this._camera.coords,
                 instances: world.tile.data().map(({ sprite, ...rest }) => rest),
             } satisfies LightArgs,
@@ -52,6 +53,6 @@ export class Light {
 
     getLightSource(x: number, y: number) {
         const id = Math.floor(y * this._world.widthInBlocks + x);
-        return (this.light_s?.[id] ?? 0) / 25;
+        return (this.light_s?.[id] ?? 0) / 50;
     }
 }

@@ -1,5 +1,14 @@
 import type { SpriteCrop, SpriteInstance } from '@sprite/types';
 
+type DrawArgs = {
+    x?: number;
+    y?: number;
+    w?: number;
+    h?: number;
+    opacity?: number;
+    isBackground?: boolean;
+};
+
 export class Sprite {
     private readonly image: HTMLImageElement;
     private readonly x: number;
@@ -32,22 +41,28 @@ export class Sprite {
         };
     }
 
-    draw(ctx: CanvasRenderingContext2D, frame = 1, x?: number, y?: number, w?: number, h?: number, opacity?: number) {
+    draw(ctx: CanvasRenderingContext2D, frame = 1, args?: DrawArgs) {
         if (!this.image || !this.cropBox) {
             return;
         }
 
-        ctx.globalAlpha = opacity ?? 1;
+        ctx.globalAlpha = args?.opacity ?? 1;
+
         ctx.drawImage(
             this.image,
             this.cropBox.offset.x * frame,
             this.cropBox.offset.y,
             this.cropBox.size.width,
             this.cropBox.size.height,
-            x ?? this.x,
-            y ?? this.y,
-            w ?? this.cropBox.size.width,
-            h ?? this.cropBox.size.height
+            args?.x ?? this.x,
+            args?.y ?? this.y,
+            args?.w ?? this.cropBox.size.width,
+            args?.h ?? this.cropBox.size.height
         );
+
+        if (args?.isBackground) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 }

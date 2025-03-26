@@ -9,6 +9,6 @@ export const enum TileEnum {
     SANDSTONE,
     PALM_LOG,
     PALM_LEAVES,
-    ORE,
+    UNKNOWN,
     WATER,
 }

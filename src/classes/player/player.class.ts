@@ -8,7 +8,7 @@ import { TILE_SIZE } from '@tile/tile.class';
 import sprite from '@sprites/hero.png';
 
 export class Player extends Entity {
-    public id: number;
+    id: number;
 
     constructor() {
         super({
@@ -39,6 +39,9 @@ export class Player extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        this.sprite.draw(ctx, this.frame, Math.floor(this.coords.x - camera.x), Math.floor(this.coords.y - camera.y));
+        this.sprite.draw(ctx, this.frame, {
+            x: Math.floor(this.coords.x - camera.x),
+            y: Math.floor(this.coords.y - camera.y),
+        });
     }
 }

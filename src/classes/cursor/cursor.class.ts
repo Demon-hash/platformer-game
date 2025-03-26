@@ -25,7 +25,7 @@ export class Cursor {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.cursor.sprite.draw(ctx, 0, this.cursor.x, this.cursor.y);
+        this.cursor.sprite.draw(ctx, 0, { x: this.cursor.x, y: this.cursor.y });
     }
 
     private _listenForMouseMove(canvas?: HTMLCanvasElement) {

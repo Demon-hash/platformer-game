@@ -34,7 +34,7 @@ export class Resource {
             'palm_leaves',
             crop(TILE_SIZE, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)
         ),
-        this._tile(TileEnum.ORE, false, false, 'ore', crop(TILE_SIZE * 2, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
+        this._tile(TileEnum.UNKNOWN, false, false, 'unknown', crop(TILE_SIZE * 2, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
         this._tile(TileEnum.WATER, false, false, 'water', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), water),
     ];
 

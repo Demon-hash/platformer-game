@@ -62,7 +62,7 @@ export class Inventory {
         const y = camera.h / 2 - halfOfImageHeight;
 
         ctx.save();
-        this._inventory.draw(ctx, 0, x, y);
+        this._inventory.draw(ctx, 0, { x, y });
         void this._listenForSlotsIntersected(ctx, x, y + this._imageHeight - SLOT_SIZE);
         ctx.restore();
     }
@@ -88,7 +88,7 @@ export class Inventory {
                 const rectangle = new Rectangle(cx, cy, SLOT_SIZE, SLOT_SIZE);
 
                 if (rectangle.pointInRectangle(coords.x, coords.y)) {
-                    this._selected.draw(ctx, 0, cx, cy);
+                    this._selected.draw(ctx, 0, { x: cx, y: cy });
                 }
             }
         }
@@ -98,7 +98,7 @@ export class Inventory {
 
         const rectangle = new Rectangle(cx, cy, SLOT_SIZE, SLOT_SIZE);
         if (rectangle.pointInRectangle(coords.x, coords.y)) {
-            this._selected.draw(ctx, 0, cx, cy);
+            this._selected.draw(ctx, 0, { x: cx, y: cy });
         }
     }
 
@@ -115,7 +115,7 @@ export class Inventory {
 
                 const rectangle = new Rectangle(x, y, SLOT_SIZE, SLOT_SIZE);
                 if (rectangle.pointInRectangle(coords.x, coords.y)) {
-                    this._selected.draw(ctx, 0, x, y);
+                    this._selected.draw(ctx, 0, { x, y });
                 }
             }
         }
