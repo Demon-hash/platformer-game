@@ -59,15 +59,19 @@ function simulate() {
                 continue;
             }
 
-            const ptr = settings.tiles;
-            const delta = getInstanceProperty(ptr[getId(w, h)], 'solid') ? settings.light_s[getId(w, h)] : 75;
+            const delta =
+                getInstanceProperty(settings.backgrounds[getId(w, h)], 'solid') ||
+                getInstanceProperty(settings.tiles[getId(w, h)], 'solid') ||
+                settings.tiles[getId(w, h)] === TileEnum.WATER
+                    ? settings.light_s[getId(w, h)]
+                    : 75;
 
             if (delta <= 0) continue;
 
-            lumen[0] = Number(!!ptr[getId(w - 1, h)]) * 8 + 1;
-            lumen[1] = Number(!!ptr[getId(w + 1, h)]) * 8 + 1;
-            lumen[2] = Number(!!ptr[getId(w, h - 1)]) * 8 + 1;
-            lumen[3] = Number(!!ptr[getId(w, h + 1)]) * 8 + 1;
+            lumen[0] = Number(!!settings.backgrounds[getId(w - 1, h)] || !!settings.tiles[getId(w - 1, h)]) * 8 + 1;
+            lumen[1] = Number(!!settings.backgrounds[getId(w + 1, h)] || !!settings.tiles[getId(w + 1, h)]) * 8 + 1;
+            lumen[2] = Number(!!settings.backgrounds[getId(w, h - 1)] || !!settings.tiles[getId(w, h - 1)]) * 8 + 1;
+            lumen[3] = Number(!!settings.backgrounds[getId(w, h + 1)] || !!settings.tiles[getId(w, h + 1)]) * 8 + 1;
 
             if (settings.light_h[getId(w - 1, h)] < delta - lumen[0]) {
                 settings.light_h[getId(w - 1, h)] = delta - lumen[0];
@@ -100,21 +104,4 @@ function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
     }
 
     return settings.instances?.[id]?.[key];
-}
-
-function circle(x: number, y: number, radius: number, delta: number) {
-    for (let coof, w, h = 0; h < radius * 2; h++) {
-        for (w = 0; w < radius * 2; w++) {
-            const dx = radius - w;
-            const dy = radius - h;
-
-            if (Math.pow(dx, 2) + Math.pow(dy, 2) <= Math.pow(radius, 2)) {
-                coof = Number(!!settings.tiles[getId(x + dx, y + dy)]);
-
-                if (settings.light_h[getId(x + dx, y + dy)] < delta - coof) {
-                    settings.light_h[getId(x + dx, y + dy)] = delta - coof;
-                }
-            }
-        }
-    }
 }

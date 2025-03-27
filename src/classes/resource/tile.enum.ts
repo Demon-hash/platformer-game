@@ -5,6 +5,7 @@ export const enum TileEnum {
     STONE,
     MAHOGANY_LOG,
     MAHOGANY_LEAVES,
+    SAND_COVER,
     SAND,
     SANDSTONE,
     PALM_LOG,

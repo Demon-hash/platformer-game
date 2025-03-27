@@ -2,6 +2,7 @@ import type { BiomData } from './types';
 import { ChunkType } from '@chunk/types';
 import { BeachBiom } from '@biom/types/beach-biom.class';
 import { MeadowBiom } from '@biom/types/meadow-biom.class';
+import { OceanBiom } from '@biom/types/ocean-biom.class';
 import { UnknownBiom } from '@biom/types/unknown-biom.class';
 
 export class Biom {
@@ -11,6 +12,7 @@ export class Biom {
         [ChunkType.UNINITIALIZED]: new UnknownBiom().data(),
         [ChunkType.MEADOW]: new MeadowBiom().data(),
         [ChunkType.BEACH]: new BeachBiom().data(),
+        [ChunkType.OCEAN]: new OceanBiom().data(),
     };
 
     constructor() {

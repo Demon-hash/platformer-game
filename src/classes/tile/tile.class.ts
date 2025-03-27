@@ -1,6 +1,6 @@
+import type { TileData } from './types';
 import { Resource } from '../resource';
 import { type Liquid, LIQUID_MAX_MASS } from '../liquid';
-import type { TileData } from './types';
 import { TileEnum } from '@resources/tile.enum';
 
 export const TILE_SIZE = 16;
@@ -35,9 +35,12 @@ export class Tile {
         liquid: Liquid,
         opacity: number
     ) {
-        const isBackground = tileId === TileEnum.SKY && backgroundTileId !== TileEnum.SKY;
-        const rawTileId = isBackground ? backgroundTileId : tileId;
-        const args = { opacity, isBackground };
+        const rawTileId = backgroundTileId || tileId;
+        const args = {
+            opacity,
+            isBackground: Boolean(!tileId && backgroundTileId),
+            isWater: tileId === TileEnum.WATER,
+        };
 
         switch (tileId) {
             case TileEnum.WATER:

@@ -3,7 +3,6 @@ import { Chunk } from '@chunk/chunk.class';
 import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
 import { Light } from '@light/light.class';
-import { TileEnum } from '@resources/tile.enum';
 
 export const WORLD_WIDTH = 8400;
 export const WORLD_HEIGHT = 2400;
@@ -35,10 +34,10 @@ export class World {
         this._tiles = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
         this._backgrounds = new Uint8Array(new SharedArrayBuffer(this.widthInBlocks * this.heightInBlocks));
 
-        this._chunk = new Chunk(this);
-
         this.liquid = new Liquid(this);
         this.light = new Light(this);
+
+        this._chunk = new Chunk(this, this.liquid);
     }
 
     getId(x: number, y: number) {

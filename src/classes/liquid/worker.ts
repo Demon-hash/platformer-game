@@ -1,4 +1,5 @@
 import { type LiquidArgs, type LiquidDataInstance, MessageType } from './types';
+import { TileEnum } from '@resources/tile.enum';
 
 let settings: LiquidArgs;
 
@@ -12,7 +13,7 @@ self.onmessage = ({
     switch (type as MessageType) {
         case MessageType.INIT:
             settings = data;
-            setInterval(() => simulate(), 3.5);
+            setInterval(() => simulate(), 1);
             break;
         case MessageType.ADD:
             settings.updated[getId(x, y)] = mass;
@@ -55,8 +56,8 @@ function setWaterByMass(startX: number, startY: number, endX: number, endY: numb
             }
 
             if (getMassValue(x, y) >= settings.minMass) {
-                setTileId(x, y, 11);
-            } else if (id === 11) {
+                setTileId(x, y, TileEnum.WATER);
+            } else if (id === TileEnum.WATER) {
                 setTileId(x, y, 0);
                 settings.updated[id] = 0;
             }

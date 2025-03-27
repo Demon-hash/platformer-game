@@ -14,6 +14,7 @@ export class UnknownBiom implements BiomInstance {
 
     data(): BiomData {
         return {
+            radius: 0,
             cover: TileEnum.SKY,
             dirt: TileEnum.SKY,
             stone: TileEnum.SKY,

@@ -7,6 +7,7 @@ type DrawArgs = {
     h?: number;
     opacity?: number;
     isBackground?: boolean;
+    isWater?: boolean;
 };
 
 export class Sprite {
@@ -46,8 +47,30 @@ export class Sprite {
             return;
         }
 
-        ctx.globalAlpha = args?.opacity ?? 1;
+        if (args?.isWater) {
+            const acceptableValues = (val: number, values: number[]) =>
+                values.reduce((prev, cur) => (val >= cur ? cur : prev), values[0]);
 
+            const natural = acceptableValues(
+                Math.abs(100 - Math.min(1, args?.opacity ?? 1) * 100) / 10,
+                [0, 1, 2, 3, 4, 8, 6, 7, 8, 9]
+            );
+
+            ctx.drawImage(
+                this.image,
+                natural === 0 ? this.cropBox.offset.x * frame : 0,
+                this.cropBox.offset.y + natural * 16,
+                this.cropBox.size.width,
+                this.cropBox.size.height,
+                args?.x ?? this.x,
+                args?.y ?? this.y,
+                args?.w ?? this.cropBox.size.width,
+                args?.h ?? this.cropBox.size.height
+            );
+            return;
+        }
+
+        ctx.globalAlpha = args?.opacity ?? 1;
         ctx.drawImage(
             this.image,
             this.cropBox.offset.x * frame,
@@ -61,7 +84,7 @@ export class Sprite {
         );
 
         if (args?.isBackground) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }

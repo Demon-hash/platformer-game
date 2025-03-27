@@ -3,6 +3,7 @@ import type { Camera } from '@camera/camera.class';
 import type { ChunkArgs } from '@chunk/types';
 import { Thread } from '@thread/thread.class';
 import { MessageType } from '@liquid/types';
+import { Liquid } from '@liquid/liquid.class';
 
 export const MIN_CHUNK_LENGTH = 256;
 
@@ -11,7 +12,7 @@ export class Chunk {
     private readonly _cameraCoords: Uint32Array;
     private readonly _thread: Thread;
 
-    constructor(world: World, size = MIN_CHUNK_LENGTH) {
+    constructor(world: World, liquid: Liquid, size = MIN_CHUNK_LENGTH) {
         if (Chunk._instance) {
             return Chunk._instance;
         }
@@ -28,6 +29,7 @@ export class Chunk {
                 height: Math.ceil(world.heightInBlocks / size),
                 coords: this._cameraCoords,
                 tiles: world.data(),
+                water: liquid.updated,
                 backgrounds: world.backgrounds(),
                 widthInBlocks: world.widthInBlocks,
             } satisfies ChunkArgs,

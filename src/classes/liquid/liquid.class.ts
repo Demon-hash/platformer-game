@@ -14,6 +14,7 @@ export class Liquid {
     private readonly _camera: Camera;
 
     masses: Float32Array;
+    updated: Float32Array;
 
     constructor(world: World) {
         if (Liquid._instance) {
@@ -26,6 +27,7 @@ export class Liquid {
         this._camera = new Camera();
 
         this.masses = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
+        this.updated = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
 
         this._thread.send({
             type: MessageType.INIT,
@@ -38,7 +40,7 @@ export class Liquid {
                 width: world.widthInBlocks,
                 height: world.heightInBlocks,
                 masses: this.masses,
-                updated: new Float32Array(world.widthInBlocks * world.heightInBlocks),
+                updated: this.updated,
                 tiles: world.data(),
                 coords: this._camera.coords,
                 instances: world.tile.data().map(({ sprite, ...rest }) => rest),

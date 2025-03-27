@@ -5,6 +5,7 @@ import { TILE_SIZE } from '@tile/tile.class';
 import { Biom } from '@biom/biom.class';
 import { TileEnum } from '@resources/tile.enum';
 import { MessageType } from '@liquid/types';
+import type { BiomTree } from '@biom/types';
 
 const chunkSize = 256;
 const biom = new Biom();
@@ -14,6 +15,14 @@ let chunkData: ChunkData[] = [];
 let settings: ChunkArgs;
 let startHeight = 350;
 let lastTreeCoords = 0;
+
+type Position = {
+    edges: boolean;
+    center: boolean;
+    halfVertical: boolean;
+    halfHorizontal: boolean;
+    top: boolean;
+};
 
 self.onmessage = ({
     data: {
@@ -75,7 +84,7 @@ function createCaves(x: number, y: number, level: number) {
 
     const worm = getWorm(x, y);
     for (let w = 0; w < worm.length; w++) {
-        circle(x + w, worm[w], amplitude(4, 8), () => TileEnum.UNKNOWN);
+        circle(x + w, worm[w], 10, () => TileEnum.UNKNOWN);
     }
 }
 
@@ -83,6 +92,7 @@ function deepLevel(x: number, gradations: number[], material: number, y?: number
     for (let h = 0; h < chunkSize; h++) {
         for (let w = 0; w < chunkSize; w++) {
             if (getWorldTile(x + w, (y ?? gradations[w]) + h) === TileEnum.UNKNOWN) {
+                setWorldBackgroundTile(x + w, (y ?? gradations[w]) + h, TileEnum.SAND, 1);
                 continue;
             }
 
@@ -91,43 +101,52 @@ function deepLevel(x: number, gradations: number[], material: number, y?: number
     }
 }
 
+function plant(trees: BiomTree[], gradations: number[], x: number, cover: number, dirt: number) {
+    if (!trees.length) {
+        lastTreeCoords += chunkSize;
+        return;
+    }
+
+    const randomTreeIndex = Math.floor(Math.random() * trees.length);
+
+    for (let w = 0; w < chunkSize; w++) {
+        circle(x + w, gradations[w], 30, (a, b) => {
+            if (getWorldTile(a, b) === cover) {
+                const coords = trees[randomTreeIndex](setWorldTile, a, b - 1, lastTreeCoords);
+
+                if (coords) {
+                    lastTreeCoords += coords;
+                    return dirt;
+                }
+            }
+
+            return getWorldTile(a, b);
+        });
+    }
+}
+
 function coverLevel(x: number, y: number, level: number) {
-    const { cover, dirt, stone } = biom.data(getType());
+    const { cover, dirt, stone, radius, trees } = biom.data(getType());
 
     if (level === 2) {
         const gradations = getGradations(x);
+        deepLevel(x, gradations, stone);
+
         for (let w = 0; w < chunkSize; w++) {
-            circle(x + w, gradations[w], 30, () => dirt);
-            circle(x + w, gradations[w], 30, (x, y) =>
+            circle(x + w, gradations[w], radius, () => dirt);
+            circle(x + w, gradations[w], radius, (x, y) =>
                 [TileEnum.SKY, TileEnum.UNKNOWN].includes(getWorldTile(x, y - 1)) ? cover : dirt
             );
         }
 
-        deepLevel(x, gradations, stone);
+        plant(trees, gradations, x, cover, dirt);
         return;
     }
 
     if (level > 2) {
         deepLevel(x, [], stone, y);
     }
-
-    //  const randomTreeIndex = Math.floor(Math.random() * trees.length);
-    // settings.lastTreeCoords = trees[randomTreeIndex](
-    //                         settings.world,
-    //                         x,
-    //                         y - 20,
-    //                         settings.lastTreeCoords,
-    //                         x + settings.chunkSize - 32
-    //                     );
 }
-
-type Position = {
-    edges: boolean;
-    center: boolean;
-    halfVertical: boolean;
-    halfHorizontal: boolean;
-    top: boolean;
-};
 
 function circle(x: number, y: number, r: number, comp: (x: number, y: number, p: Position) => number) {
     const R = r * 2;
@@ -173,8 +192,7 @@ function getWorm(x: number, y: number) {
     let w = x;
     let h = y;
 
-    // length: 20 + Math.floor(Math.random() * (chunkSize - 20))
-    return Array.from({ length: Math.round(chunkSize) })
+    return Array.from({ length: Math.round(chunkSize * 1.5) })
         .fill(0)
         .map((_, index) => {
             if (index === 0) {
@@ -188,8 +206,8 @@ function getWorm(x: number, y: number) {
 }
 
 function getType() {
-    // ChunkType.MEADOW | ChunkType.BEACH
-    return ChunkType.MEADOW;
+    const chunks = Object.values(ChunkType).filter(Number) as ChunkType[];
+    return chunks[Math.floor(Math.random() * chunks.length)];
 }
 
 function amplitude(min: number, max: number): number {
@@ -215,16 +233,50 @@ function getChunkData(x: number, y: number, key: keyof ChunkData) {
     return chunkData[getChunkId(x, y)][key];
 }
 
-function getWorldId(x: number, y: number) {
+function getWorldCoords(x: number, y: number) {
     return Math.floor(y * settings.widthInBlocks + x);
+}
+
+function canSetBackground(id: number) {
+    return ![
+        TileEnum.PALM_LOG,
+        TileEnum.PALM_LEAVES,
+        TileEnum.MAHOGANY_LOG,
+        TileEnum.MAHOGANY_LEAVES,
+        TileEnum.UNKNOWN,
+    ].includes(id);
 }
 
 function setWorldTile(x: number, y: number, id: number, projection = TILE_SIZE) {
     settings.tiles[Math.floor(Math.floor(y / projection) * settings.widthInBlocks + Math.floor(x / projection))] = id;
+
+    if (canSetBackground(id)) {
+        let newId;
+
+        switch (id) {
+            case TileEnum.COVER:
+                newId = TileEnum.DIRT;
+                break;
+            case TileEnum.WATER:
+                settings.water[getWorldCoords(x, y)] = 1024;
+                newId = TileEnum.SKY;
+                break;
+            default:
+                newId = id;
+                break;
+        }
+
+        settings.backgrounds[
+            Math.floor(Math.floor(y / projection) * settings.widthInBlocks + Math.floor(x / projection))
+        ] = newId;
+    }
+}
+
+function setWorldBackgroundTile(x: number, y: number, id: number, projection = TILE_SIZE) {
     settings.backgrounds[Math.floor(Math.floor(y / projection) * settings.widthInBlocks + Math.floor(x / projection))] =
         id;
 }
 
 function getWorldTile(x: number, y: number): number {
-    return settings.tiles[getWorldId(x, y)];
+    return settings.tiles[getWorldCoords(x, y)];
 }

@@ -35,11 +35,8 @@ export class Level implements Scene {
     }
 
     private _onLeftClick(event: MouseEvent) {
-        this._world.setTileId(event.x + this._camera.x, event.y + this._camera.y, 2);
-        // this._world.setBackgroundTileId(event.x + this._camera.x, event.y + this._camera.y, 2);
-
         // this._world.createLightSource(event.x + this._camera.x, event.y + this._camera.y, 75);
-        // this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
+        this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
     }
 
     private _onRightClick(event: MouseEvent) {

@@ -24,6 +24,7 @@ export class Resource {
             'mahogany_leaves',
             crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)
         ),
+        this._tile(TileEnum.SAND_COVER, true, false, 'sand', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
         this._tile(TileEnum.SAND, true, false, 'sand', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
         this._tile(TileEnum.SANDSTONE, true, false, 'sandstone', crop(TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
         this._tile(TileEnum.PALM_LOG, false, true, 'palm', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
