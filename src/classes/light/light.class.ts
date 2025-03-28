@@ -1,8 +1,8 @@
-import { Thread } from '@thread/thread.class';
-import { MessageType } from '@liquid/types';
-import { Camera } from '@camera/camera.class';
 import type { World } from '@world/world.class';
-import { LightArgs } from '@light/types';
+import type { LightArgs } from '@light/types';
+import { Thread } from '@thread/thread.class';
+import { Camera } from '@camera/camera.class';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 export class Light {
     private static _instance?: Light;
@@ -21,7 +21,7 @@ export class Light {
 
         Light._instance = this;
 
-        this._thread = new Thread(new Worker(new URL('./light-worker.ts', import.meta.url)));
+        this._thread = new Thread(new Worker(new URL('../thread/light.thread.ts', import.meta.url)));
         this._camera = new Camera();
 
         this._world = world;
@@ -30,7 +30,7 @@ export class Light {
         this.light_h = new Uint8Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks));
 
         this._thread.send({
-            type: MessageType.INIT,
+            type: ThreadMessageType.INIT,
             data: {
                 width: world.widthInBlocks,
                 height: world.heightInBlocks,
@@ -46,7 +46,7 @@ export class Light {
 
     addSource(x: number, y: number, range = 2) {
         this._thread.send({
-            type: MessageType.ADD,
+            type: ThreadMessageType.ADD,
             data: { x, y, range },
         });
     }

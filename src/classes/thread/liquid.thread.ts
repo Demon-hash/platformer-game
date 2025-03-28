@@ -1,5 +1,7 @@
-import { type LiquidArgs, type LiquidDataInstance, MessageType } from './types';
+import type { LiquidArgs } from '@liquid/types';
+import type { ThreadTileDataInstance } from '@thread/types';
 import { TileEnum } from '@resources/tile.enum';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 let settings: LiquidArgs;
 
@@ -10,12 +12,12 @@ self.onmessage = ({
 }) => {
     const { x, y, mass } = data;
 
-    switch (type as MessageType) {
-        case MessageType.INIT:
+    switch (type as ThreadMessageType) {
+        case ThreadMessageType.INIT:
             settings = data;
             setInterval(() => simulate(), 1);
             break;
-        case MessageType.ADD:
+        case ThreadMessageType.ADD:
             settings.updated[getId(x, y)] = mass;
             break;
         default:
@@ -100,7 +102,7 @@ function getTileId(x: number, y: number) {
     return settings.tiles[getId(x, y)];
 }
 
-function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
+function getInstanceProperty(id: number, key: keyof ThreadTileDataInstance) {
     return settings.instances[id][key];
 }
 

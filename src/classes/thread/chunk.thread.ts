@@ -1,11 +1,11 @@
+import type { BiomTree } from '@biom/types';
 import Alea from 'alea';
 import { createNoise2D } from 'simplex-noise';
 import { type ChunkArgs, type ChunkData, ChunkType } from '@chunk/types';
 import { TILE_SIZE } from '@tile/tile.class';
 import { Biom } from '@biom/biom.class';
 import { TileEnum } from '@resources/tile.enum';
-import { MessageType } from '@liquid/types';
-import type { BiomTree } from '@biom/types';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 const chunkSize = 256;
 const biom = new Biom();
@@ -29,8 +29,8 @@ self.onmessage = ({
         message: { type, data },
     },
 }) => {
-    switch (type as MessageType) {
-        case MessageType.INIT:
+    switch (type as ThreadMessageType) {
+        case ThreadMessageType.INIT:
             settings = data;
 
             chunkData = new Array(settings.width * settings.height).fill(null).map(() => ({

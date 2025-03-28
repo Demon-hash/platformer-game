@@ -1,6 +1,7 @@
-import { type LiquidDataInstance, MessageType } from '@liquid/types';
-import type { LightArgs } from './types';
+import type { ThreadTileDataInstance } from '@thread/types';
+import type { LightArgs } from '@light/types';
 import { TileEnum } from '@resources/tile.enum';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 let settings: LightArgs;
 
@@ -13,15 +14,14 @@ self.onmessage = ({
 }) => {
     const { x, y, range } = data;
 
-    switch (type as MessageType) {
-        case MessageType.INIT:
+    switch (type as ThreadMessageType) {
+        case ThreadMessageType.INIT:
             settings = data;
             setInterval(() => simulate(), 1);
             break;
-        case MessageType.ADD:
+        case ThreadMessageType.ADD:
             settings.light_s[getId(x, y)] = range;
             sources.push([getId(x, y), range]);
-
             break;
         default:
             break;
@@ -98,7 +98,7 @@ function getId(x: number, y: number): number {
     return Math.floor(y * settings.width + x);
 }
 
-function getInstanceProperty(id: number, key: keyof LiquidDataInstance) {
+function getInstanceProperty(id: number, key: keyof ThreadTileDataInstance) {
     if (id < 0 || id >= settings.instances.length) {
         return undefined;
     }

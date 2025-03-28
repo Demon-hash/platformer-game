@@ -1,11 +1,4 @@
-import type { TileData } from '../tile';
-
-export const enum MessageType {
-    INIT = 'INIT',
-    ADD = 'ADD',
-}
-
-export type LiquidDataInstance = Omit<TileData, 'sprite'>;
+import type { ThreadTileDataInstance } from '@thread/types';
 
 export interface LiquidArgs {
     minMass: number;
@@ -19,5 +12,5 @@ export interface LiquidArgs {
     updated: Float32Array;
     tiles: Uint8Array;
     coords: Uint32Array;
-    instances: LiquidDataInstance[];
+    instances: ThreadTileDataInstance[];
 }

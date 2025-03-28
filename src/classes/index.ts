@@ -10,3 +10,4 @@ export * from './chunk';
 export * from './level';
 export * from './scene';
 export * from './thread';
+export * from './physics';

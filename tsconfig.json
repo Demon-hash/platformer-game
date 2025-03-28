@@ -20,6 +20,7 @@
       "@config/*": ["config/*"],
       "@types/*": ["config/types/*"],
       "@sprites/*": ["assets/sprites/*"],
+      "@physics/*": ["classes/physics/*"],
       "@cursor/*": ["classes/cursor/*"],
       "@inventory/*": ["classes/inventory/*"],
       "@light/*": ["classes/light/*"],

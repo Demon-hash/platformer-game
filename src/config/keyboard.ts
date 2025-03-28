@@ -4,4 +4,5 @@ export const KEYBOARD_CONFIG = {
     up: 'w',
     down: 's',
     inv: 'i',
+    jump: ' ',
 };

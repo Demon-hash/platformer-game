@@ -14,7 +14,7 @@ export class Rectangle {
     collision(rectangle: Rectangle) {
         return (
             this.left >= rectangle.left &&
-            this.right <= this.right &&
+            this.right <= rectangle.right &&
             this.top >= rectangle.top &&
             this.down <= rectangle.down
         );

@@ -1,7 +1,8 @@
 import type { World } from '@world/world.class';
+import type { LiquidArgs } from '@liquid/types';
 import { Thread } from '@thread/thread.class';
-import { type LiquidArgs, MessageType } from '@liquid/types';
 import { Camera } from '@camera/camera.class';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 export const LIQUID_MAX_MASS = 8;
 
@@ -23,14 +24,14 @@ export class Liquid {
 
         Liquid._instance = this;
 
-        this._thread = new Thread(new Worker(new URL('./worker.ts', import.meta.url)));
+        this._thread = new Thread(new Worker(new URL('../thread/liquid.thread.ts', import.meta.url)));
         this._camera = new Camera();
 
         this.masses = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
         this.updated = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
 
         this._thread.send({
-            type: MessageType.INIT,
+            type: ThreadMessageType.INIT,
             data: {
                 minMass: 0.01,
                 maxMass: LIQUID_MAX_MASS,
@@ -50,7 +51,7 @@ export class Liquid {
 
     addMass(x: number, y: number, mass = LIQUID_MAX_MASS) {
         this._thread.send({
-            type: MessageType.ADD,
+            type: ThreadMessageType.ADD,
             data: { x, y, mass },
         });
     }

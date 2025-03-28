@@ -6,7 +6,7 @@ import type { Coords } from '@global-types';
 import { Vec2 } from '@math/vec2';
 import { Sprite } from '@sprite/sprite.class';
 import { Tile, TILE_SIZE } from '@tile/tile.class';
-import { KEYBOARD_CONFIG } from '@config/keyboard';
+import { Rectangle } from '@math/rectangle';
 
 export class Entity implements EntityLifeCycle {
     private readonly _tile = new Tile();
@@ -18,8 +18,8 @@ export class Entity implements EntityLifeCycle {
     protected gravity;
     protected frame;
 
-    public coords: Coords;
-    public borders: SpriteBorders;
+    coords: Coords;
+    borders: SpriteBorders;
 
     constructor({ coords, borders, misc, sprite }: EntityInstance) {
         this.coords = coords;
@@ -38,93 +38,6 @@ export class Entity implements EntityLifeCycle {
         });
     }
 
-    protected usesKeyboard() {
-        window.addEventListener(
-            'keypress',
-            (event: KeyboardEvent) => {
-                switch (event.key) {
-                    case KEYBOARD_CONFIG.right:
-                        this.velocity.x = this.speed;
-                        break;
-                    case KEYBOARD_CONFIG.left:
-                        this.velocity.x = -this.speed;
-                        break;
-                    case ' ':
-                        this.coords.y--;
-                        this.velocity.y = -10;
-                        break;
-                }
-            },
-            false
-        );
-
-        window.addEventListener(
-            'keyup',
-            (event: KeyboardEvent) => {
-                switch (event.key) {
-                    case KEYBOARD_CONFIG.right:
-                    case KEYBOARD_CONFIG.left:
-                        this.velocity.x = 0;
-                        break;
-                }
-            },
-            false
-        );
-    }
-
-    async collision() {
-        if (!this.world) {
-            return;
-        }
-
-        const rectangle = {
-            horizontal: {
-                x: Math.floor((this.coords.x + this.velocity.x) / TILE_SIZE),
-                w: Math.floor((this.coords.x + this.borders.width + this.velocity.x) / TILE_SIZE),
-                y: Math.floor(this.coords.y / TILE_SIZE),
-                iterations: Math.ceil((this.borders.height + this.velocity.y) / TILE_SIZE),
-            },
-            vertical: {
-                x: Math.floor(this.coords.x / TILE_SIZE),
-                w: Math.floor((this.coords.x + this.borders.width + this.velocity.x) / TILE_SIZE),
-                y: Math.floor((this.coords.y + this.borders.height) / TILE_SIZE),
-                h: Math.floor((this.coords.y + this.velocity.y) / TILE_SIZE),
-                iterations: Math.ceil((this.borders.width + this.velocity.x) / TILE_SIZE),
-            },
-        };
-
-        for (let i = 0; i < rectangle.horizontal.iterations; i++) {
-            if (
-                this._tile.get(this.world.getTileId(rectangle.horizontal.x, rectangle.horizontal.y + i), 'solid') ||
-                this._tile.get(this.world.getTileId(rectangle.horizontal.w, rectangle.horizontal.y + i), 'solid')
-            ) {
-                this.velocity.x = 0;
-            }
-        }
-
-        for (let i = 0; i < rectangle.vertical.iterations; i++) {
-            if (
-                this._tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.y), 'solid') ||
-                this._tile.get(this.world.getTileId(rectangle.vertical.x + i, rectangle.vertical.h), 'solid') ||
-                this._tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.y), 'solid') ||
-                this._tile.get(this.world.getTileId(rectangle.vertical.w, rectangle.vertical.h), 'solid')
-            ) {
-                switch (Math.sign(this.velocity.y)) {
-                    case -1:
-                        this.velocity.y = this.gravity;
-                        break;
-                    case 1:
-                        this.coords.y = rectangle.vertical.y * TILE_SIZE - this.borders.height;
-                        this.velocity.y = 0;
-                        break;
-                }
-                return;
-            }
-        }
-
-        this.velocity.y += this.gravity;
-    }
-
     attach(world: World) {
         this.world = world;
     }
@@ -132,4 +45,71 @@ export class Entity implements EntityLifeCycle {
     update() {}
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {}
+
+    async collision() {
+        if (!this.world) {
+            return;
+        }
+
+        const nm = (coords: number) => Math.floor(coords / TILE_SIZE);
+
+        const wb = this.borders.width / 2;
+
+        for (let w, h = 0; h < this.borders.height; h++) {
+            for (w = -wb; w < wb; w++) {
+                const x = nm(this.coords.x + w);
+                const y = nm(this.coords.y - h);
+                const id = this.world.getTileId(x, y);
+
+                if (!this._tile.get(id, 'solid')) {
+                    continue;
+                }
+
+                const bk = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                const sf = new Rectangle(
+                    this.coords.x - wb + this.velocity.x,
+                    this.coords.y - this.borders.height + this.velocity.y,
+                    wb + this.velocity.x,
+                    this.borders.height + this.velocity.y
+                );
+
+                const isRightCollision = sf.right >= bk.left;
+                const isLeftCollision = sf.left >= bk.right;
+
+                const isTopCollision = sf.top >= bk.down;
+                const isBottomCollision = sf.down >= bk.top; // Bottom collision
+
+                if (!isTopCollision && !isBottomCollision && !isRightCollision && !isLeftCollision) {
+                    continue;
+                }
+
+                if (isRightCollision || isLeftCollision) {
+                    this.velocity.x = 0;
+                }
+
+                if (isTopCollision || isBottomCollision) {
+                    this.coords.y = this.velocity.x === 0 ? (isBottomCollision ? bk.top : bk.down) : this.coords.y;
+                    this.velocity.y = 0;
+                }
+
+                // this.coords.y = this.velocity.x === 0 ? bk.down - margin : this.coords.y;
+                // if (bk.top - sf.down != -48) {
+                // }
+
+                // switch (Math.sign(this.velocity.y)) {
+                //     case -1:
+                //         this.velocity.y = this.gravity;
+                //         return;
+                //     case 1:
+                //         this.coords.y = bk.top;
+                //         this.velocity.y = 0;
+                //         return;
+                // }
+
+                return;
+            }
+        }
+
+        this.velocity.y += this.gravity;
+    }
 }

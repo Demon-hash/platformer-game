@@ -3,26 +3,34 @@ import type { Camera } from '@camera/camera.class';
 import type { World } from '@world/world.class';
 
 export class PlayersList {
-    private players: Player[] = [];
+    private static _instance?: PlayersList;
+
+    private _players: Player[] = [];
 
     constructor(players: Player[] = []) {
+        if (PlayersList._instance) {
+            return PlayersList._instance;
+        }
+
+        PlayersList._instance = this;
+
         if (players.length) {
             players.forEach(this.add.bind(this));
         }
     }
 
     add(player: Player) {
-        player.id = this.players.length;
-        this.players.push(player);
+        player.id = this._players.length;
+        this._players.push(player);
     }
 
     delete(id: number) {
-        this.players = this.players.filter((player) => player.id !== id);
+        this._players = this._players.filter((player) => player.id !== id);
     }
 
     draw(camera: Camera, world: World, ctx: CanvasRenderingContext2D) {
         const target = camera.getAttachedId();
-        for (const [index, player] of this.players.entries()) {
+        for (const [index, player] of this._players.entries()) {
             switch (index) {
                 case target:
                     camera.update(player.coords.x, player.coords.y, world.width, world.height);

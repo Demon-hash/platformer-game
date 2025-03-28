@@ -24,12 +24,13 @@ export class Tile {
     }
 
     get(id: number, key: keyof TileData) {
-        return this._tiles[id][key];
+        return this._tiles?.[id]?.[key];
     }
 
     draw(
         tileId: number,
         backgroundTileId: number,
+        upperTileId: number,
         ctx: CanvasRenderingContext2D,
         id: number,
         liquid: Liquid,
@@ -46,7 +47,10 @@ export class Tile {
             case TileEnum.WATER:
                 const frame = Math.floor(Math.min(LIQUID_MAX_MASS / liquid.masses[id], LIQUID_MAX_MASS));
                 this._tiles[TileEnum.SKY].sprite.draw(ctx, 1);
-                this._tiles[tileId].sprite.draw(ctx, frame + 1, args);
+                this._tiles[tileId].sprite.draw(ctx, frame + 1, {
+                    ...args,
+                    heightOffset: upperTileId === TileEnum.SKY ? 16 : 0,
+                });
                 break;
             case TileEnum.SKY:
                 this._tiles[rawTileId].sprite.draw(ctx, 1, args);

@@ -8,6 +8,8 @@ export const WORLD_WIDTH = 8400;
 export const WORLD_HEIGHT = 2400;
 
 export class World {
+    private static _instance?: World;
+
     private readonly _chunk: Chunk;
 
     readonly tile: Tile;
@@ -23,6 +25,12 @@ export class World {
     private readonly _backgrounds: Uint8Array;
 
     constructor() {
+        if (World._instance) {
+            return World._instance;
+        }
+
+        World._instance = this;
+
         this.tile = new Tile();
 
         this.width = WORLD_WIDTH * TILE_SIZE;
@@ -94,6 +102,7 @@ export class World {
                 this.tile.draw(
                     this.getTileId(x, y),
                     this.getBackgroundTileId(x, y),
+                    this.getTileId(x, y - 1),
                     ctx,
                     this.getId(x, y),
                     this.liquid,

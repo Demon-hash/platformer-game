@@ -6,6 +6,7 @@ type DrawArgs = {
     w?: number;
     h?: number;
     opacity?: number;
+    heightOffset?: number;
     isBackground?: boolean;
     isWater?: boolean;
 };
@@ -59,7 +60,7 @@ export class Sprite {
             ctx.drawImage(
                 this.image,
                 natural === 0 ? this.cropBox.offset.x * frame : 0,
-                this.cropBox.offset.y + natural * 16,
+                this.cropBox.offset.y + natural * 16 + (args?.heightOffset ?? 0),
                 this.cropBox.size.width,
                 this.cropBox.size.height,
                 args?.x ?? this.x,

@@ -2,8 +2,8 @@ import type { World } from '@world/world.class';
 import type { Camera } from '@camera/camera.class';
 import type { ChunkArgs } from '@chunk/types';
 import { Thread } from '@thread/thread.class';
-import { MessageType } from '@liquid/types';
 import { Liquid } from '@liquid/liquid.class';
+import { ThreadMessageType } from '@thread/thread-msg-type';
 
 export const MIN_CHUNK_LENGTH = 256;
 
@@ -19,11 +19,11 @@ export class Chunk {
 
         Chunk._instance = this;
 
-        this._thread = new Thread(new Worker(new URL('./chunk-worker.ts', import.meta.url)));
+        this._thread = new Thread(new Worker(new URL('../thread/chunk.thread.ts', import.meta.url)));
         this._cameraCoords = new Uint32Array(new SharedArrayBuffer(16));
 
         this._thread.send({
-            type: MessageType.INIT,
+            type: ThreadMessageType.INIT,
             data: {
                 width: Math.ceil(world.widthInBlocks / size),
                 height: Math.ceil(world.heightInBlocks / size),
