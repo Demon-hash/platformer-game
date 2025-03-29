@@ -5,38 +5,33 @@ import { crop } from '@sprite/crop';
 import { Sprite } from '@sprite/sprite.class';
 import { TileEnum } from '@resources/tile.enum';
 
-import sprites from '@sprites/sheet.png';
+import sheet from '@sprites/sheet.png';
 import water from '@sprites/water.png';
+
+const ts = 16;
 
 export class Resource {
     static _instance: null | Resource;
 
     private readonly _tiles: TileData[] = [
-        this._tile(TileEnum.SKY, false, false, 'sky', crop(0, 0, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.COVER, true, false, 'cover', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.DIRT, true, false, 'dirt', crop(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.STONE, true, false, 'stone', crop(TILE_SIZE * 3, 0, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.MAHOGANY_LOG, false, true, 'mahogany', crop(0, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-        this._tile(
-            TileEnum.MAHOGANY_LEAVES,
-            false,
-            true,
-            'mahogany_leaves',
-            crop(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)
-        ),
-        this._tile(TileEnum.SAND_COVER, true, false, 'sand', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.SAND, true, false, 'sand', crop(TILE_SIZE * 2, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.SANDSTONE, true, false, 'sandstone', crop(TILE_SIZE * 3, TILE_SIZE, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.PALM_LOG, false, true, 'palm', crop(0, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-        this._tile(
-            TileEnum.PALM_LEAVES,
-            false,
-            true,
-            'palm_leaves',
-            crop(TILE_SIZE, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)
-        ),
-        this._tile(TileEnum.UNKNOWN, false, false, 'unknown', crop(TILE_SIZE * 2, TILE_SIZE * 2, TILE_SIZE, TILE_SIZE)),
-        this._tile(TileEnum.WATER, false, false, 'water', crop(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), water),
+        this._tile(TileEnum.SKY, false, false, 'sky', crop(0, 0, ts, ts)),
+
+        this._tile(TileEnum.COVER, true, false, 'cover', crop(ts, 0, ts, ts)),
+        this._tile(TileEnum.DIRT, true, false, 'dirt', crop(ts, ts, ts, ts)),
+        this._tile(TileEnum.STONE, true, false, 'stone', crop(ts * 3, ts * 3, ts, ts)),
+
+        this._tile(TileEnum.MAHOGANY_LOG, false, true, 'mahogany', crop(ts * 4, ts * 2, ts, ts)),
+        this._tile(TileEnum.MAHOGANY_LEAVES, false, true, 'mahogany_leaves', crop(ts * 5, ts * 2, ts, ts)),
+
+        this._tile(TileEnum.SAND_COVER, true, false, 'sand', crop(ts * 3, 0, ts, ts)),
+        this._tile(TileEnum.SAND, true, false, 'sand', crop(ts * 3, ts, ts, ts)),
+        this._tile(TileEnum.SANDSTONE, true, false, 'sandstone', crop(ts * 3, ts * 2, ts, ts)),
+
+        this._tile(TileEnum.PALM_LOG, false, true, 'palm', crop(ts * 4, ts * 3, ts, ts)),
+        this._tile(TileEnum.PALM_LEAVES, false, true, 'palm_leaves', crop(ts * 5, ts * 3, ts, ts)),
+
+        this._tile(TileEnum.UNKNOWN, false, false, 'unknown', crop(0, 0, ts, ts)),
+        this._tile(TileEnum.WATER, false, false, 'water', crop(ts, 0, ts, ts), water),
     ];
 
     constructor() {
@@ -57,7 +52,7 @@ export class Resource {
         vegetation: boolean,
         name: string,
         crop: SpriteCrop,
-        image = sprites
+        image = sheet
     ): TileData {
         return {
             id,

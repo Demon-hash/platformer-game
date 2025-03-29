@@ -7,6 +7,7 @@ import { TILE_SIZE } from '@tile/tile.class';
 
 import sprite from '@sprites/player.png';
 import { KEYBOARD_CONFIG } from '@config/keyboard';
+import { Rectangle } from '@math/rectangle';
 
 export class Player extends Entity {
     private readonly _isKeyPressed: Record<string, boolean> = {};
@@ -37,13 +38,10 @@ export class Player extends Entity {
     }
 
     update() {
-        void this.collision();
-
         if (this._isKeyPressed?.[KEYBOARD_CONFIG.right] || this._isKeyPressed?.[KEYBOARD_CONFIG.left]) {
             const right = +(this._isKeyPressed?.[KEYBOARD_CONFIG.right] ?? 0);
             const left = -(this._isKeyPressed?.[KEYBOARD_CONFIG.left] ?? 0);
 
-            this.coords.y--;
             this.velocity.x = (right + left) * this.speed;
         }
 
@@ -51,15 +49,32 @@ export class Player extends Entity {
             this.velocity.y = -5;
         }
 
+        void this.collision();
         this.coords.x += Math.floor(this.velocity.x);
-        this.coords.y += Math.min(this.velocity.y, TILE_SIZE);
+        this.coords.y += Math.min(this.velocity.y, TILE_SIZE - 1);
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        this.sprite.draw(ctx, this.frame, {
-            x: Math.floor(this.coords.x - camera.x) - this.borders.width / 2 - this.velocity.x,
-            y: Math.floor(this.coords.y - camera.y) - this.borders.height - this.velocity.y,
-        });
+        // const x = Math.floor(this.coords.x - camera.x) + this.velocity.x;
+        // const y = Math.floor(this.coords.y - camera.y) - this.borders.height;
+        //
+        // this.sprite.draw(ctx, this.frame, { x, y });
+
+        const shape = new Rectangle(
+            Math.floor(this.coords.x + this.velocity.x - camera.x),
+            Math.floor(this.coords.y - 1 - this.borders.height + this.velocity.y - camera.y),
+            this.borders.width,
+            this.borders.height
+        );
+
+        ctx.fillStyle = '#009900';
+        ctx.fillRect(shape.left, shape.top, this.borders.width, this.borders.height);
+
+        // ctx.fillStyle = '#ff9900';
+        // ctx.fillRect(shape.left, shape.top, this.borders.width, 2);
+
+        // ctx.fillStyle = '#ff5500';
+        // ctx.fillRect(shape.left, shape.down - 2, this.borders.width, 2);
     }
 
     private _onMove(event: KeyboardEvent) {

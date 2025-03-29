@@ -9,7 +9,7 @@ import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Rectangle } from '@math/rectangle';
 
 export class Entity implements EntityLifeCycle {
-    private readonly _tile = new Tile();
+    private readonly _td = new Tile();
 
     protected world: World;
     protected sprite: Sprite;
@@ -51,65 +51,40 @@ export class Entity implements EntityLifeCycle {
             return;
         }
 
-        const nm = (coords: number) => Math.floor(coords / TILE_SIZE);
+        const shape = new Rectangle(
+            Math.floor(this.coords.x + this.velocity.x),
+            Math.floor(this.coords.y - this.borders.height + this.velocity.y),
+            this.borders.width,
+            this.borders.height
+        );
 
-        const wb = this.borders.width / 2;
+        this.velocity.y += this.gravity;
 
-        for (let w, h = 0; h < this.borders.height; h++) {
-            for (w = -wb; w < wb; w++) {
-                const x = nm(this.coords.x + w);
-                const y = nm(this.coords.y - h);
-                const id = this.world.getTileId(x, y);
+        this.velocity.x = this._isHorizontalCol(shape) ? 0 : this.velocity.x;
+        this.velocity.y = this._isVerticalCol(shape) ? 0 : this.velocity.y;
+    }
 
-                if (!this._tile.get(id, 'solid')) {
+    private _isHorizontalCol(shape: Rectangle) {
+        return this._isVerticalCol(shape, 1);
+    }
+
+    private _isVerticalCol(shape: Rectangle, yOffset = 0) {
+        const normalize = (coords: number) => Math.floor(coords / TILE_SIZE);
+
+        for (let i, x, y, w, h = 0; h < this.borders.height - yOffset; h++) {
+            for (w = 0; w < this.borders.width; w++) {
+                x = normalize(shape.left + w);
+                y = normalize(shape.top + h);
+                i = this.world.getTileId(x, y);
+
+                if (!this._td.get(i, 'solid')) {
                     continue;
                 }
 
-                const bk = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                const sf = new Rectangle(
-                    this.coords.x - wb + this.velocity.x,
-                    this.coords.y - this.borders.height + this.velocity.y,
-                    wb + this.velocity.x,
-                    this.borders.height + this.velocity.y
-                );
-
-                const isRightCollision = sf.right >= bk.left;
-                const isLeftCollision = sf.left >= bk.right;
-
-                const isTopCollision = sf.top >= bk.down;
-                const isBottomCollision = sf.down >= bk.top; // Bottom collision
-
-                if (!isTopCollision && !isBottomCollision && !isRightCollision && !isLeftCollision) {
-                    continue;
-                }
-
-                if (isRightCollision || isLeftCollision) {
-                    this.velocity.x = 0;
-                }
-
-                if (isTopCollision || isBottomCollision) {
-                    this.coords.y = this.velocity.x === 0 ? (isBottomCollision ? bk.top : bk.down) : this.coords.y;
-                    this.velocity.y = 0;
-                }
-
-                // this.coords.y = this.velocity.x === 0 ? bk.down - margin : this.coords.y;
-                // if (bk.top - sf.down != -48) {
-                // }
-
-                // switch (Math.sign(this.velocity.y)) {
-                //     case -1:
-                //         this.velocity.y = this.gravity;
-                //         return;
-                //     case 1:
-                //         this.coords.y = bk.top;
-                //         this.velocity.y = 0;
-                //         return;
-                // }
-
-                return;
+                return true;
             }
         }
 
-        this.velocity.y += this.gravity;
+        return false;
     }
 }
