@@ -7,7 +7,6 @@ import { TILE_SIZE } from '@tile/tile.class';
 
 import sprite from '@sprites/player.png';
 import { KEYBOARD_CONFIG } from '@config/keyboard';
-import { Rectangle } from '@math/rectangle';
 
 export class Player extends Entity {
     private readonly _isKeyPressed: Record<string, boolean> = {};
@@ -37,7 +36,7 @@ export class Player extends Entity {
         }, 120);
     }
 
-    update() {
+    update(delta: DOMHighResTimeStamp) {
         if (this._isKeyPressed?.[KEYBOARD_CONFIG.right] || this._isKeyPressed?.[KEYBOARD_CONFIG.left]) {
             const right = +(this._isKeyPressed?.[KEYBOARD_CONFIG.right] ?? 0);
             const left = -(this._isKeyPressed?.[KEYBOARD_CONFIG.left] ?? 0);
@@ -55,26 +54,9 @@ export class Player extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        // const x = Math.floor(this.coords.x - camera.x) + this.velocity.x;
-        // const y = Math.floor(this.coords.y - camera.y) - this.borders.height;
-        //
-        // this.sprite.draw(ctx, this.frame, { x, y });
-
-        const shape = new Rectangle(
-            Math.floor(this.coords.x + this.velocity.x - camera.x),
-            Math.floor(this.coords.y - 1 - this.borders.height + this.velocity.y - camera.y),
-            this.borders.width,
-            this.borders.height
-        );
-
-        ctx.fillStyle = '#009900';
-        ctx.fillRect(shape.left, shape.top, this.borders.width, this.borders.height);
-
-        // ctx.fillStyle = '#ff9900';
-        // ctx.fillRect(shape.left, shape.top, this.borders.width, 2);
-
-        // ctx.fillStyle = '#ff5500';
-        // ctx.fillRect(shape.left, shape.down - 2, this.borders.width, 2);
+        const x = Math.floor(this.coords.x - (camera.x + this.velocity.x));
+        const y = Math.floor(this.coords.y - 1 - this.borders.height - (camera.y + this.velocity.y));
+        this.sprite.draw(ctx, this.frame, { x, y });
     }
 
     private _onMove(event: KeyboardEvent) {

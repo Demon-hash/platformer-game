@@ -20,7 +20,7 @@ export type EntityInstance = {
 };
 
 export interface EntityLifeCycle {
-    update(): void;
+    update(delta: DOMHighResTimeStamp): void;
     collision(): Promise<void>;
     draw(ctx: CanvasRenderingContext2D, camera: Camera): void;
 }

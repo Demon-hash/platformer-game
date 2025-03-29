@@ -28,20 +28,20 @@ export class PlayersList {
         this._players = this._players.filter((player) => player.id !== id);
     }
 
-    draw(camera: Camera, world: World, ctx: CanvasRenderingContext2D) {
+    draw(camera: Camera, world: World, ctx: CanvasRenderingContext2D, delta: DOMHighResTimeStamp) {
         const target = camera.getAttachedId();
         for (const [index, player] of this._players.entries()) {
             switch (index) {
                 case target:
                     camera.update(player.coords.x, player.coords.y, world.width, world.height);
-                    player.update();
+                    player.update(delta);
                     player.draw(ctx, camera);
                     break;
                 default:
                     if (
                         camera.hasFocusAt(player.coords.x, player.coords.y, player.borders.width, player.borders.height)
                     ) {
-                        player.update();
+                        player.update(delta);
                         player.draw(ctx, camera);
                     }
                     break;

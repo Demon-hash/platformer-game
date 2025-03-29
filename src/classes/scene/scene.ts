@@ -1,3 +1,3 @@
 export interface Scene {
-    draw(ctx: CanvasRenderingContext2D): void;
+    draw(ctx: CanvasRenderingContext2D, delta: DOMHighResTimeStamp): void;
 }

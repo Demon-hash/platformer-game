@@ -24,9 +24,9 @@ export class Level implements Scene {
         this._listenForMouseEvents();
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, delta: DOMHighResTimeStamp) {
         this._world.draw(ctx, this._camera);
-        this._playersList.draw(this._camera, this._world, ctx);
+        this._playersList.draw(this._camera, this._world, ctx, delta);
     }
 
     private _listenForMouseEvents() {

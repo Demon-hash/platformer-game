@@ -3,7 +3,6 @@ import { Camera, CAMERA_HEIGHT, CAMERA_WIDTH } from '@camera/camera.class';
 import { Inventory } from '@inventory/inventory.class';
 import { Cursor } from '@cursor/cursor.class';
 
-// export const SCREEN_BACKGROUND_COLOR = 'rgb(120,191,236)';
 export const SCREEN_BACKGROUND_COLOR = '#000';
 
 export class Screen {
@@ -18,6 +17,7 @@ export class Screen {
     private readonly _camera: Camera;
 
     private _scene: Scene;
+    private _prevTime?: DOMHighResTimeStamp;
 
     constructor() {
         if (Screen._instance) {
@@ -34,7 +34,7 @@ export class Screen {
         this._camera = new Camera();
 
         this._resize();
-        this._redraw();
+        this._redraw(0);
     }
 
     setScene(scene: Scene) {
@@ -50,17 +50,27 @@ export class Screen {
         this._canvas.height = CAMERA_HEIGHT;
     }
 
-    private _redraw() {
+    private _redraw(now: DOMHighResTimeStamp) {
         window.requestAnimationFrame(this._redraw.bind(this));
-        this._clear();
+
+        if (!this._prevTime) {
+            this._prevTime = now;
+        }
+
+        const delta = now - this._prevTime;
+
+        if (now - this._prevTime > 1000 / 120) {
+            this._clear(delta);
+            this._prevTime = now;
+        }
     }
 
-    private _clear(color = SCREEN_BACKGROUND_COLOR) {
-        this._ctx.fillStyle = color;
+    private _clear(delta: DOMHighResTimeStamp) {
+        this._ctx.fillStyle = SCREEN_BACKGROUND_COLOR;
         this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
         if (this._scene) {
-            this._scene.draw(this._ctx);
+            this._scene.draw(this._ctx, delta);
             this._inventory.draw(this._ctx, this._camera);
             this._cursor.draw(this._ctx);
         }

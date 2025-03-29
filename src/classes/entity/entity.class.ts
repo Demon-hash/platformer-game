@@ -42,7 +42,7 @@ export class Entity implements EntityLifeCycle {
         this.world = world;
     }
 
-    update() {}
+    update(delta: DOMHighResTimeStamp) {}
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {}
 
@@ -58,30 +58,45 @@ export class Entity implements EntityLifeCycle {
             this.borders.height
         );
 
+        const isVerticalCol = this._isCol(
+            shape,
+            (shape, bk) => shape.top <= bk.down || shape.down >= bk.top,
+            this.velocity.x
+        );
+
+        const isHorizontalCol = this._isCol(
+            shape,
+            (shape, bk) => shape.right >= bk.left || shape.left <= bk.right,
+            0,
+            1
+        );
+
         this.velocity.y += this.gravity;
 
-        this.velocity.x = this._isHorizontalCol(shape) ? 0 : this.velocity.x;
-        this.velocity.y = this._isVerticalCol(shape) ? 0 : this.velocity.y;
+        this.velocity.x = isHorizontalCol ? 0 : this.velocity.x;
+        this.velocity.y = isVerticalCol ? 0 : this.velocity.y;
     }
 
-    private _isHorizontalCol(shape: Rectangle) {
-        return this._isVerticalCol(shape, 1);
-    }
-
-    private _isVerticalCol(shape: Rectangle, yOffset = 0) {
+    private _isCol(
+        shape: Rectangle,
+        comparator: (shape: Rectangle, block: Rectangle) => boolean,
+        xOffset = 0,
+        yOffset = 0
+    ) {
         const normalize = (coords: number) => Math.floor(coords / TILE_SIZE);
 
-        for (let i, x, y, w, h = 0; h < this.borders.height - yOffset; h++) {
+        for (let x, y, w, h = 0; h < this.borders.height - yOffset; h++) {
             for (w = 0; w < this.borders.width; w++) {
-                x = normalize(shape.left + w);
+                x = normalize(shape.left + w - xOffset);
                 y = normalize(shape.top + h);
-                i = this.world.getTileId(x, y);
 
-                if (!this._td.get(i, 'solid')) {
+                if (!this._td.get(this.world.getTileId(x, y), 'solid')) {
                     continue;
                 }
 
-                return true;
+                if (comparator(shape, new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
+                    return true;
+                }
             }
         }
 
