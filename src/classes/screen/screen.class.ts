@@ -5,6 +5,8 @@ import { Cursor } from '@cursor/cursor.class';
 
 export const SCREEN_BACKGROUND_COLOR = '#000';
 
+const FPS_120 = 1000 / 120;
+
 export class Screen {
     private static _instance?: Screen;
 
@@ -59,7 +61,7 @@ export class Screen {
 
         const delta = now - this._prevTime;
 
-        if (now - this._prevTime > 1000 / 120) {
+        if (delta > FPS_120) {
             this._clear(delta);
             this._prevTime = now;
         }

@@ -32,6 +32,11 @@ export class Resource {
 
         this._tile(TileEnum.UNKNOWN, false, false, 'unknown', crop(0, 0, ts, ts)),
         this._tile(TileEnum.WATER, false, false, 'water', crop(ts, 0, ts, ts), water),
+
+        this._tile(TileEnum.LEMON_LEAVES, false, true, 'lemon_leaves', crop(ts * 4, 0, ts, ts)),
+        this._tile(TileEnum.LIME_LEAVES, false, true, 'lime_leaves', crop(ts * 5, 0, ts, ts)),
+        this._tile(TileEnum.ORANGE_LEAVES, false, true, 'orange_leaves', crop(ts * 4, ts, ts, ts)),
+        this._tile(TileEnum.GRAPEFRUIT_LEAVES, false, true, 'grapefruit_leaves', crop(ts * 5, ts, ts, ts)),
     ];
 
     constructor() {

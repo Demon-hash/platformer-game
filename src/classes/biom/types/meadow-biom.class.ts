@@ -33,23 +33,60 @@ export class MeadowBiom implements BiomInstance {
             return 0;
         }
 
-        const size = 5 + Math.round(Math.random() * 15);
-        const length = 10 + Math.round(Math.random() * 10);
+        const size = 8 + Math.round(Math.random() * 5);
+        const length = 18 + Math.round(Math.random() * 5);
+        const leavesType = [
+            TileEnum.MAHOGANY_LEAVES,
+            TileEnum.MAHOGANY_LEAVES,
+            TileEnum.MAHOGANY_LEAVES,
+            TileEnum.LEMON_LEAVES,
+            TileEnum.LIME_LEAVES,
+            TileEnum.ORANGE_LEAVES,
+            TileEnum.GRAPEFRUIT_LEAVES,
+        ];
 
-        const line = (x: number, y: number, direction: number, id: number) => {
+        const leaves = leavesType[Math.floor(Math.random() * leavesType.length)];
+
+        const getLeaves = () => (Math.random() > 0.5 ? leaves : TileEnum.MAHOGANY_LEAVES);
+
+        const line = (x: number, y: number, direction: number, material: () => number) => {
             for (let i = -direction; i <= direction; i++) {
-                setter(x + i, y, id, 1);
+                setter(x + i, y, material(), 1);
             }
         };
 
-        for (let s = 0; s < size; s++) {
+        const circle = (a: number, b: number, r: number, comp: (c: number, d: number) => number) => {
+            const R = r * 2;
+            for (let w, h = 0; h < R; h++) {
+                for (w = 0; w < R; w++) {
+                    const dx = r - w;
+                    const dy = r - h;
+
+                    const O = Math.pow(dx, 2) + Math.pow(dy, 2);
+
+                    if (O <= R) {
+                        setter(a + dx, b + dy, comp(a + dx, b + dy), 1);
+                    }
+                }
+            }
+        };
+
+        line(x, y - (size - 1), 5, () => getLeaves());
+        line(x, y - (size - 2), 5, () => getLeaves());
+        line(x, y - (size - 3), 4, () => getLeaves());
+
+        line(x, y - size, 5, () => getLeaves());
+        line(x, y - (size + 1), 4, () => getLeaves());
+        line(x, y - (size + 2), 3, () => getLeaves());
+        line(x, y - (size + 3), 2, () => getLeaves());
+
+        circle(x, y - (size + 5), 10, () => getLeaves());
+
+        for (let s = 0; s < size + 4; s++) {
             setter(x, y - s, TileEnum.MAHOGANY_LOG, 1);
         }
 
-        line(x, y - size, 5, TileEnum.MAHOGANY_LEAVES);
-        line(x, y - (size + 1), 4, TileEnum.MAHOGANY_LEAVES);
-        line(x, y - (size + 2), 3, TileEnum.MAHOGANY_LEAVES);
-        line(x, y - (size + 3), 2, TileEnum.MAHOGANY_LEAVES);
+        circle(x, y + 4, 5, () => (Math.random() > 0.6 ? TileEnum.MAHOGANY_LOG : TileEnum.DIRT));
 
         return length;
     };

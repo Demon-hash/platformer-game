@@ -14,7 +14,7 @@ export class OceanBiom implements BiomInstance {
 
     data(): BiomData {
         return {
-            radius: 96,
+            radius: 12,
             cover: TileEnum.WATER,
             dirt: TileEnum.WATER,
             stone: TileEnum.SAND,
