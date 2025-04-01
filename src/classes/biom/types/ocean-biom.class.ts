@@ -17,6 +17,7 @@ export class OceanBiom implements BiomInstance {
             radius: 12,
             cover: TileEnum.WATER,
             dirt: TileEnum.WATER,
+            mud: TileEnum.WATER,
             stone: TileEnum.SAND,
             trees: [],
         };

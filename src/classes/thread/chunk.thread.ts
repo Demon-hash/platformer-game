@@ -107,12 +107,11 @@ function plant(trees: BiomTree[], gradations: number[], x: number, cover: number
         return;
     }
 
-    const randomTreeIndex = Math.floor(Math.random() * trees.length);
-
     for (let w = 0; w < chunkSize; w++) {
         circle(x + w, gradations[w], 30, (a, b) => {
             if (getWorldTile(a, b) === cover) {
-                const coords = trees[randomTreeIndex](setWorldTile, a, b - 1, lastTreeCoords);
+                const randomTreeIndex = Math.floor(Math.random() * trees.length);
+                const coords = trees[randomTreeIndex](setWorldTile, a, b - 1, lastTreeCoords, Infinity, getWorldTile);
 
                 if (coords) {
                     lastTreeCoords += coords;
@@ -126,7 +125,7 @@ function plant(trees: BiomTree[], gradations: number[], x: number, cover: number
 }
 
 function coverLevel(x: number, y: number, level: number) {
-    const { cover, dirt, stone, radius, trees } = biom.data(getType());
+    const { cover, dirt, mud, stone, radius, trees } = biom.data(getType());
 
     if (level === 2) {
         const gradations = getGradations(x);
@@ -135,7 +134,7 @@ function coverLevel(x: number, y: number, level: number) {
         for (let w = 0; w < chunkSize; w++) {
             circle(x + w, gradations[w], radius, () => dirt);
             circle(x + w, gradations[w], radius, (x, y) =>
-                [TileEnum.SKY, TileEnum.UNKNOWN].includes(getWorldTile(x, y - 1)) ? cover : dirt
+                [TileEnum.SKY, TileEnum.UNKNOWN].includes(getWorldTile(x, y - 1)) ? cover : getWorldTile(x, y)
             );
         }
 
@@ -207,7 +206,7 @@ function getWorm(x: number, y: number) {
 
 function getType() {
     const chunks = Object.values(ChunkType).filter(Number) as ChunkType[];
-    return chunks[Math.floor(Math.random() * chunks.length)];
+    return ChunkType.MEADOW; // chunks[Math.floor(Math.random() * chunks.length)];
 }
 
 function amplitude(min: number, max: number): number {
@@ -258,7 +257,7 @@ function setWorldTile(x: number, y: number, id: number, projection = TILE_SIZE) 
                 newId = TileEnum.DIRT;
                 break;
             case TileEnum.WATER:
-                settings.water[getWorldCoords(x, y)] = 1024;
+                settings.water[getWorldCoords(x, y)] = 16;
                 newId = TileEnum.SKY;
                 break;
             default:

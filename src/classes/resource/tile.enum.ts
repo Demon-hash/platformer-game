@@ -16,4 +16,9 @@ export const enum TileEnum {
     LIME_LEAVES,
     ORANGE_LEAVES,
     GRAPEFRUIT_LEAVES,
+    MUD_COVER,
+    COCONUT,
+    BAMBOO_TOP,
+    BAMBOO,
+    MUD,
 }

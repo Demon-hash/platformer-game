@@ -17,6 +17,7 @@ export class BeachBiom implements BiomInstance {
             radius: 30,
             cover: TileEnum.SAND_COVER,
             dirt: TileEnum.SAND,
+            mud: TileEnum.SAND,
             stone: TileEnum.SANDSTONE,
             trees: [this._palm.bind(this)],
         };
@@ -36,10 +37,6 @@ export class BeachBiom implements BiomInstance {
             }
         };
 
-        for (let s = 0; s < size; s++) {
-            setter(x, y - s, TileEnum.PALM_LOG, 1);
-        }
-
         line(x, y - size, 2, TileEnum.PALM_LEAVES);
         line(x, y - (size + 1), 1, TileEnum.PALM_LEAVES);
 
@@ -51,6 +48,13 @@ export class BeachBiom implements BiomInstance {
 
         setter(x + 4, y - (size + 1), TileEnum.PALM_LEAVES, 1);
         setter(x - 4, y - (size + 1), TileEnum.PALM_LEAVES, 1);
+
+        for (let s = 0; s < size; s++) {
+            setter(x, y - s, TileEnum.PALM_LOG, 1);
+        }
+
+        setter(x - 1, y - (size - 1), TileEnum.COCONUT, 1);
+        setter(x + 1, y - (size - 1), TileEnum.COCONUT, 1);
 
         return length;
     };

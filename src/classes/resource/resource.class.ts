@@ -18,7 +18,7 @@ export class Resource {
 
         this._tile(TileEnum.COVER, true, false, 'cover', crop(ts, 0, ts, ts)),
         this._tile(TileEnum.DIRT, true, false, 'dirt', crop(ts, ts, ts, ts)),
-        this._tile(TileEnum.STONE, true, false, 'stone', crop(ts * 3, ts * 3, ts, ts)),
+        this._tile(TileEnum.STONE, true, false, 'stone', crop(ts * 2, ts * 2, ts, ts)),
 
         this._tile(TileEnum.MAHOGANY_LOG, false, true, 'mahogany', crop(ts * 4, ts * 2, ts, ts)),
         this._tile(TileEnum.MAHOGANY_LEAVES, false, true, 'mahogany_leaves', crop(ts * 5, ts * 2, ts, ts)),
@@ -37,6 +37,13 @@ export class Resource {
         this._tile(TileEnum.LIME_LEAVES, false, true, 'lime_leaves', crop(ts * 5, 0, ts, ts)),
         this._tile(TileEnum.ORANGE_LEAVES, false, true, 'orange_leaves', crop(ts * 4, ts, ts, ts)),
         this._tile(TileEnum.GRAPEFRUIT_LEAVES, false, true, 'grapefruit_leaves', crop(ts * 5, ts, ts, ts)),
+
+        this._tile(TileEnum.MUD_COVER, true, false, 'mud_cover', crop(ts * 2, 0, ts, ts)),
+        this._tile(TileEnum.COCONUT, false, false, 'coconut', crop(ts * 4, ts * 5, ts, ts)),
+        this._tile(TileEnum.BAMBOO_TOP, false, false, 'coconut', crop(ts * 4, ts * 4, ts, ts)),
+        this._tile(TileEnum.BAMBOO, false, false, 'coconut', crop(ts * 5, ts * 4, ts, ts)),
+
+        this._tile(TileEnum.MUD, true, false, 'mud', crop(ts * 2, ts, ts, ts)),
     ];
 
     constructor() {
