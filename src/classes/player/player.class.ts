@@ -45,7 +45,7 @@ export class Player extends Entity {
         }
 
         if (this._isKeyPressed?.[KEYBOARD_CONFIG.jump]) {
-            this.velocity.y = -5;
+            this.velocity.y = -4;
         }
 
         void this.collision();
@@ -54,8 +54,11 @@ export class Player extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        const x = Math.floor(this.coords.x - (camera.x + this.velocity.x));
-        const y = Math.floor(this.coords.y - 1 - this.borders.height - (camera.y + this.velocity.y));
+        const x = Math.round(this.coords.x - (camera.x + this.velocity.x));
+        const y = Math.round(this.coords.y - 1 - this.borders.height - (camera.y + this.velocity.y));
+
+        //  console.log(`x: ${x}`);
+
         this.sprite.draw(ctx, this.frame, { x, y });
     }
 

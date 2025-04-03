@@ -7,6 +7,7 @@ import { TileEnum } from '@resources/tile.enum';
 
 import sheet from '@sprites/sheet.png';
 import water from '@sprites/water.png';
+import lava from '@sprites/lava.png';
 
 const ts = 16;
 
@@ -40,10 +41,11 @@ export class Resource {
 
         this._tile(TileEnum.MUD_COVER, true, false, 'mud_cover', crop(ts * 2, 0, ts, ts)),
         this._tile(TileEnum.COCONUT, false, false, 'coconut', crop(ts * 4, ts * 5, ts, ts)),
-        this._tile(TileEnum.BAMBOO_TOP, false, false, 'coconut', crop(ts * 4, ts * 4, ts, ts)),
-        this._tile(TileEnum.BAMBOO, false, false, 'coconut', crop(ts * 5, ts * 4, ts, ts)),
+        this._tile(TileEnum.BAMBOO_TOP, false, true, 'coconut', crop(ts * 4, ts * 4, ts, ts)),
+        this._tile(TileEnum.BAMBOO, false, true, 'coconut', crop(ts * 5, ts * 4, ts, ts)),
 
         this._tile(TileEnum.MUD, true, false, 'mud', crop(ts * 2, ts, ts, ts)),
+        this._tile(TileEnum.LAVA, false, false, 'lava', crop(ts, 0, ts, ts), lava),
     ];
 
     constructor() {

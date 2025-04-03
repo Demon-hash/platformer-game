@@ -2,6 +2,7 @@ import type { Scene } from '@scene/scene';
 import { Camera } from '@camera/camera.class';
 import { World } from '@world/world.class';
 import { PlayersList } from '@players-list/players-list.class';
+import { LiquidKind } from '@liquid/types';
 
 export class Level implements Scene {
     private static _instance?: Level;
@@ -35,9 +36,9 @@ export class Level implements Scene {
     }
 
     private _onLeftClick(event: MouseEvent) {
-        this._world.setTileId(event.x + this._camera.x, event.y + this._camera.y, 1);
+        // this._world.setTileId(event.x + this._camera.x, event.y + this._camera.y, 1);
         // this._world.createLightSource(event.x + this._camera.x, event.y + this._camera.y, 75);
-        // this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y);
+        this._world.addLiquid(event.x + this._camera.x, event.y + this._camera.y, LiquidKind.WATER);
     }
 
     private _onRightClick(event: MouseEvent) {

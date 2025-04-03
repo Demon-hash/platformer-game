@@ -1,10 +1,10 @@
 import type { World } from '@world/world.class';
-import type { LiquidArgs } from '@liquid/types';
+import { type LiquidArgs, LiquidKind } from '@liquid/types';
 import { Thread } from '@thread/thread.class';
 import { Camera } from '@camera/camera.class';
 import { ThreadMessageType } from '@thread/thread-msg-type';
 
-export const LIQUID_MAX_MASS = 8;
+export const LIQUID_MAX_MASS = 4;
 
 const INT_SIZE = 4;
 
@@ -16,6 +16,7 @@ export class Liquid {
 
     masses: Float32Array;
     updated: Float32Array;
+    kind: Uint8Array;
 
     constructor(world: World) {
         if (Liquid._instance) {
@@ -29,11 +30,12 @@ export class Liquid {
 
         this.masses = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
         this.updated = new Float32Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks * INT_SIZE));
+        this.kind = new Uint8Array(new SharedArrayBuffer(world.widthInBlocks * world.heightInBlocks));
 
         this._thread.send({
             type: ThreadMessageType.INIT,
             data: {
-                minMass: 0.01,
+                minMass: 0.001,
                 maxMass: LIQUID_MAX_MASS,
                 compression: 0.02,
                 speed: 15,
@@ -42,6 +44,7 @@ export class Liquid {
                 height: world.heightInBlocks,
                 masses: this.masses,
                 updated: this.updated,
+                kind: this.kind,
                 tiles: world.data(),
                 coords: this._camera.coords,
                 instances: world.tile.data().map(({ sprite, ...rest }) => rest),
@@ -49,10 +52,10 @@ export class Liquid {
         });
     }
 
-    addMass(x: number, y: number, mass = LIQUID_MAX_MASS) {
+    addMass(x: number, y: number, mass = LIQUID_MAX_MASS, kind = LiquidKind.WATER) {
         this._thread.send({
             type: ThreadMessageType.ADD,
-            data: { x, y, mass },
+            data: { x, y, mass, kind },
         });
     }
 }

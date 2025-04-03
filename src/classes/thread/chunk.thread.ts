@@ -1,11 +1,12 @@
-import type { BiomTree } from '@biom/types';
+import type { BiomTree, Structures } from '@biom/types';
 import Alea from 'alea';
 import { createNoise2D } from 'simplex-noise';
 import { type ChunkArgs, type ChunkData, ChunkType } from '@chunk/types';
-import { TILE_SIZE } from '@tile/tile.class';
+import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Biom } from '@biom/biom.class';
 import { TileEnum } from '@resources/tile.enum';
 import { ThreadMessageType } from '@thread/thread-msg-type';
+import { LiquidKind } from '@liquid/types';
 
 const chunkSize = 256;
 const biom = new Biom();
@@ -101,8 +102,8 @@ function deepLevel(x: number, gradations: number[], material: number, y?: number
     }
 }
 
-function plant(trees: BiomTree[], gradations: number[], x: number, cover: number, dirt: number) {
-    if (!trees.length) {
+function structure(structures: Structures, gradations: number[], x: number, cover: number, dirt: number) {
+    if (!structures.length) {
         lastTreeCoords += chunkSize;
         return;
     }
@@ -110,8 +111,15 @@ function plant(trees: BiomTree[], gradations: number[], x: number, cover: number
     for (let w = 0; w < chunkSize; w++) {
         circle(x + w, gradations[w], 30, (a, b) => {
             if (getWorldTile(a, b) === cover) {
-                const randomTreeIndex = Math.floor(Math.random() * trees.length);
-                const coords = trees[randomTreeIndex](setWorldTile, a, b - 1, lastTreeCoords, Infinity, getWorldTile);
+                const percent = Math.random();
+                const candidates = structures.filter(({ chance }) => chance >= percent).map(({ data }) => data);
+
+                if (!candidates.length) {
+                    return dirt;
+                }
+
+                const randomIndex = Math.floor(Math.random() * candidates.length);
+                const coords = candidates[randomIndex](setWorldTile, a, b - 1, lastTreeCoords, Infinity, getWorldTile);
 
                 if (coords) {
                     lastTreeCoords += coords;
@@ -125,7 +133,7 @@ function plant(trees: BiomTree[], gradations: number[], x: number, cover: number
 }
 
 function coverLevel(x: number, y: number, level: number) {
-    const { cover, dirt, mud, stone, radius, trees } = biom.data(getType());
+    const { cover, dirt, mud, stone, radius, structures } = biom.data(getType());
 
     if (level === 2) {
         const gradations = getGradations(x);
@@ -138,7 +146,7 @@ function coverLevel(x: number, y: number, level: number) {
             );
         }
 
-        plant(trees, gradations, x, cover, dirt);
+        structure(structures, gradations, x, cover, dirt);
         return;
     }
 
@@ -237,13 +245,22 @@ function getWorldCoords(x: number, y: number) {
 }
 
 function canSetBackground(id: number) {
-    return ![
-        TileEnum.PALM_LOG,
-        TileEnum.PALM_LEAVES,
-        TileEnum.MAHOGANY_LOG,
-        TileEnum.MAHOGANY_LEAVES,
-        TileEnum.UNKNOWN,
-    ].includes(id);
+    switch (id) {
+        case TileEnum.BAMBOO:
+        case TileEnum.BAMBOO_TOP:
+        case TileEnum.LEMON_LEAVES:
+        case TileEnum.GRAPEFRUIT_LEAVES:
+        case TileEnum.LIME_LEAVES:
+        case TileEnum.ORANGE_LEAVES:
+        case TileEnum.PALM_LOG:
+        case TileEnum.PALM_LEAVES:
+        case TileEnum.MAHOGANY_LOG:
+        case TileEnum.MAHOGANY_LEAVES:
+        case TileEnum.UNKNOWN:
+            return false;
+        default:
+            return true;
+    }
 }
 
 function setWorldTile(x: number, y: number, id: number, projection = TILE_SIZE) {
@@ -256,8 +273,13 @@ function setWorldTile(x: number, y: number, id: number, projection = TILE_SIZE) 
             case TileEnum.COVER:
                 newId = TileEnum.DIRT;
                 break;
+            case TileEnum.MUD_COVER:
+                newId = TileEnum.MUD;
+                break;
             case TileEnum.WATER:
+            case TileEnum.LAVA:
                 settings.water[getWorldCoords(x, y)] = 16;
+                settings.kind[getWorldCoords(x, y)] = id === TileEnum.WATER ? LiquidKind.WATER : LiquidKind.LAVA;
                 newId = TileEnum.SKY;
                 break;
             default:

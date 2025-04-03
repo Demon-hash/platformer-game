@@ -19,7 +19,7 @@ export class OceanBiom implements BiomInstance {
             dirt: TileEnum.WATER,
             mud: TileEnum.WATER,
             stone: TileEnum.SAND,
-            trees: [],
+            structures: [],
         };
     }
 }

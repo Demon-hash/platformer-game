@@ -19,7 +19,7 @@ export class BeachBiom implements BiomInstance {
             dirt: TileEnum.SAND,
             mud: TileEnum.SAND,
             stone: TileEnum.SANDSTONE,
-            trees: [this._palm.bind(this)],
+            structures: [{ chance: 1, data: this._palm.bind(this) }],
         };
     }
 

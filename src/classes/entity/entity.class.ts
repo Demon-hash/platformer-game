@@ -52,19 +52,23 @@ export class Entity implements EntityLifeCycle {
         }
 
         const shape = new Rectangle(
-            Math.floor(this.coords.x + this.velocity.x),
-            Math.floor(this.coords.y - this.borders.height + this.velocity.y),
+            Math.round(this.coords.x + this.velocity.x),
+            Math.round(this.coords.y - this.borders.height + this.velocity.y),
             this.borders.width,
             this.borders.height
         );
 
-        const isVerticalCol = this._isCol(
+        const isVerticalCol = this._isCollision(
             shape,
-            (shape, bk) => shape.top <= bk.down || shape.down >= bk.top,
+            (_, bk) => {
+                // console.log(`shape: ${Math.round(_.top / 16)} | down: ${Math.round(bk.down / 16)}`);
+
+                return shape.top <= bk.down || shape.down >= bk.top;
+            },
             this.velocity.x
         );
 
-        const isHorizontalCol = this._isCol(
+        const isHorizontalCol = this._isCollision(
             shape,
             (shape, bk) => shape.right >= bk.left || shape.left <= bk.right,
             0,
@@ -77,7 +81,7 @@ export class Entity implements EntityLifeCycle {
         this.velocity.y = isVerticalCol ? 0 : this.velocity.y;
     }
 
-    private _isCol(
+    private _isCollision(
         shape: Rectangle,
         comparator: (shape: Rectangle, block: Rectangle) => boolean,
         xOffset = 0,
@@ -85,7 +89,7 @@ export class Entity implements EntityLifeCycle {
     ) {
         const normalize = (coords: number) => Math.floor(coords / TILE_SIZE);
 
-        for (let x, y, w, h = 0; h < this.borders.height - yOffset; h++) {
+        for (let block, x, y, w, h = 0; h < this.borders.height - yOffset; h++) {
             for (w = 0; w < this.borders.width; w++) {
                 x = normalize(shape.left + w - xOffset);
                 y = normalize(shape.top + h);
@@ -94,7 +98,19 @@ export class Entity implements EntityLifeCycle {
                     continue;
                 }
 
-                if (comparator(shape, new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
+                block = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+                if (
+                    comparator(
+                        shape,
+                        new Rectangle(
+                            x * TILE_SIZE - (block.left - shape.right),
+                            y * TILE_SIZE, // - (block.top - shape.down)
+                            TILE_SIZE - (block.right - shape.left),
+                            TILE_SIZE - (block.down - shape.top)
+                        )
+                    )
+                ) {
                     return true;
                 }
             }

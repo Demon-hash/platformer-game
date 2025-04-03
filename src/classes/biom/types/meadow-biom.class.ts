@@ -27,9 +27,69 @@ export class MeadowBiom implements BiomInstance {
             dirt: TileEnum.DIRT,
             mud: TileEnum.MUD,
             stone: TileEnum.STONE,
-            trees: [this._mahagony.bind(this), this._bamboo.bind(this)],
+            structures: [
+                { chance: 0.9, data: this._mahagony.bind(this) },
+                { chance: 0.5, data: this._bamboo.bind(this) },
+                { chance: 0.2, data: this._volcano.bind(this) },
+            ],
         };
     }
+
+    private _volcano: BiomTree = function (
+        setter: Function,
+        x: number,
+        y: number,
+        lastCoords = 0,
+        limitEnd = Infinity,
+        getter?: Function
+    ): number {
+        if (x < lastCoords || x > limitEnd) {
+            return 0;
+        }
+
+        const length = 70;
+
+        const walls = (x: number, y: number, isLeft: boolean) => {
+            for (let i = 0; i < 48; i++) {
+                MeadowBiom._circle((isLeft ? x + i / 4 : x - i / 4) | 0, y - i, 16, () => TileEnum.STONE, setter);
+            }
+        };
+
+        const inner = (x: number, y: number) => {
+            let i;
+
+            for (i = 0; i < 48; i++) {
+                MeadowBiom._circle(x + ((i / 3) | 0), y + i, 16, () => TileEnum.SKY, setter);
+                MeadowBiom._circle(x - ((i / 3) | 0), y + i, 16, () => TileEnum.SKY, setter);
+                MeadowBiom._circle(x, y + i, 40, () => TileEnum.LAVA, setter);
+            }
+
+            MeadowBiom._circle(x, y + i, 128, () => TileEnum.LAVA, setter);
+        };
+
+        MeadowBiom._circle(
+            x + ((length / 2) | 0),
+            y,
+            512,
+            (a, b, { halfHorizontal }) => {
+                const tile = getter?.(a, b);
+                switch (tile) {
+                    case TileEnum.COVER:
+                        walls(a, b, halfHorizontal);
+                        return TileEnum.STONE;
+                    case TileEnum.DIRT:
+                        return TileEnum.STONE;
+                    default:
+                        return tile;
+                }
+            },
+            setter
+        );
+
+        inner(x + ((length / 2) | 0), y - 49);
+
+        return length;
+    };
 
     private _bamboo: BiomTree = function (
         setter: Function,
@@ -45,6 +105,16 @@ export class MeadowBiom implements BiomInstance {
 
         const length = 16;
 
+        const createBambo = (a: number, b: number) => {
+            const size = 10 + Math.round(Math.random() * 10);
+            for (let s = 0; s < size; s++) {
+                setter(a, b - s, TileEnum.BAMBOO, 1);
+            }
+
+            setter(a, b - size, TileEnum.BAMBOO_TOP, 1);
+            setter(a, b, TileEnum.SAND, 1);
+        };
+
         MeadowBiom._circle(
             x,
             y,
@@ -52,19 +122,9 @@ export class MeadowBiom implements BiomInstance {
             (a, b) => {
                 const tile = getter?.(a, b);
 
-                const createBambo = () => {
-                    const size = 10 + Math.round(Math.random() * 10);
-                    for (let s = 0; s < size; s++) {
-                        setter(a, b - s, TileEnum.BAMBOO, 1);
-                    }
-
-                    setter(a, b - size, TileEnum.BAMBOO_TOP, 1);
-                    setter(a, b, TileEnum.SAND, 1);
-                };
-
                 switch (tile) {
                     case TileEnum.COVER:
-                        createBambo();
+                        createBambo(a, b);
                         return TileEnum.MUD_COVER;
                     case TileEnum.DIRT:
                         return TileEnum.MUD;
@@ -83,7 +143,8 @@ export class MeadowBiom implements BiomInstance {
         x: number,
         y: number,
         lastCoords = 0,
-        limitEnd = Infinity
+        limitEnd = Infinity,
+        getter
     ): number {
         if (x < lastCoords || x > limitEnd) {
             return 0;
@@ -126,7 +187,13 @@ export class MeadowBiom implements BiomInstance {
             setter(x, y - s, TileEnum.MAHOGANY_LOG, 1);
         }
 
-        MeadowBiom._circle(x, y + 4, 5, () => (Math.random() > 0.6 ? TileEnum.MAHOGANY_LOG : TileEnum.DIRT), setter);
+        MeadowBiom._circle(
+            x,
+            y + 4,
+            5,
+            (a, b) => (Math.random() > 0.6 ? TileEnum.MAHOGANY_LOG : getter?.(a, b)),
+            setter
+        );
         return length;
     };
 

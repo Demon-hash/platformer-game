@@ -30,6 +30,7 @@ export class Chunk {
                 coords: this._cameraCoords,
                 tiles: world.data(),
                 water: liquid.updated,
+                kind: liquid.kind,
                 backgrounds: world.backgrounds(),
                 widthInBlocks: world.widthInBlocks,
             } satisfies ChunkArgs,

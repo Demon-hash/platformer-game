@@ -3,6 +3,7 @@ import { Chunk } from '@chunk/chunk.class';
 import { Tile, TILE_SIZE } from '@tile/tile.class';
 import { Liquid, LIQUID_MAX_MASS } from '@liquid/liquid.class';
 import { Light } from '@light/light.class';
+import { LiquidKind } from '@liquid/types';
 
 export const WORLD_WIDTH = 8400;
 export const WORLD_HEIGHT = 2400;
@@ -69,8 +70,8 @@ export class World {
         return this._tiles[this.getId(x, y)];
     }
 
-    addLiquid(x: number, y: number, mass = LIQUID_MAX_MASS, projection = TILE_SIZE) {
-        this.liquid.addMass(Math.floor(x / projection), Math.floor(y / projection), mass);
+    addLiquid(x: number, y: number, kind: LiquidKind, mass = LIQUID_MAX_MASS, projection = TILE_SIZE) {
+        this.liquid.addMass(Math.floor(x / projection), Math.floor(y / projection), mass, kind);
     }
 
     createLightSource(x: number, y: number, range = 25, projection = TILE_SIZE) {

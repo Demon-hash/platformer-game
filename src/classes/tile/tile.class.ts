@@ -38,18 +38,19 @@ export class Tile {
     ) {
         const rawTileId = backgroundTileId || tileId;
         const args = {
-            opacity,
+            opacity: tileId === TileEnum.LAVA ? 1 : opacity,
             isBackground: Boolean(!tileId && backgroundTileId),
             isWater: tileId === TileEnum.WATER,
         };
 
         switch (tileId) {
             case TileEnum.WATER:
+            case TileEnum.LAVA:
                 const frame = Math.floor(Math.min(LIQUID_MAX_MASS / liquid.masses[id], LIQUID_MAX_MASS));
                 this._tiles[TileEnum.SKY].sprite.draw(ctx, 1);
                 this._tiles[tileId].sprite.draw(ctx, frame + 1, {
                     ...args,
-                    heightOffset: upperTileId === TileEnum.SKY ? 16 : 0,
+                    heightOffset: upperTileId === TileEnum.SKY && tileId === TileEnum.WATER ? 16 : 0,
                 });
                 break;
             case TileEnum.SKY:

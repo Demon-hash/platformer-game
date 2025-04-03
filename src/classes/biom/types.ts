@@ -7,13 +7,15 @@ export type BiomTree = (
     getter?: Function
 ) => number;
 
+export type Structures = { chance: number; data: BiomTree }[];
+
 export type BiomData = {
     cover: number;
     dirt: number;
     mud: number;
     radius: number;
     stone: number;
-    trees: BiomTree[];
+    structures: Structures;
 };
 
 export interface BiomInstance {

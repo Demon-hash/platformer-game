@@ -21,4 +21,5 @@ export const enum TileEnum {
     BAMBOO_TOP,
     BAMBOO,
     MUD,
+    LAVA,
 }

@@ -15,6 +15,7 @@ export type ChunkArgs = {
     height: number;
     coords: Uint32Array;
     water: Float32Array;
+    kind: Uint8Array;
     tiles: Uint8Array;
     backgrounds: Uint8Array;
     widthInBlocks: number;

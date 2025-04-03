@@ -19,7 +19,7 @@ export class UnknownBiom implements BiomInstance {
             dirt: TileEnum.SKY,
             mud: TileEnum.SKY,
             stone: TileEnum.SKY,
-            trees: [],
+            structures: [],
         };
     }
 }
